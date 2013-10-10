@@ -1,0 +1,23 @@
+Partner Agreement
+
+Responsibilties of both partners:
+Go to BBQ as often as possible
+Communicate with partner promptly
+Meet at least twice a week
+Upload changes to github often
+Comment/style well!
+Both look at all code - learn all of the new aspects of Modern OpenGL
+
+These parts are subject to change, depending on THINGS.
+Responsibilities of Nik
+Shaders
+Parse mars input file - we'll have to agree on a format to pass to Mars creation!
+Starfield!
+
+Responsibilites of Jackson
+Modeling ship
+Build Mars - make it pretty!
+
+Shared parts
+Camera work
+General structure
