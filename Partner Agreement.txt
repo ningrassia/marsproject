@@ -17,6 +17,7 @@ Starfield!
 Responsibilites of Jackson
 Modeling ship
 Build Mars - make it pretty!
+Lights!
 
 Shared parts
 Camera work

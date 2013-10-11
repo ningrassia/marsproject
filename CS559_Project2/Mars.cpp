@@ -19,6 +19,8 @@ Mars::Mars(fstream marsfs)
 	int height;
 	int width;
 	*/
+
+	
 }
 
 
