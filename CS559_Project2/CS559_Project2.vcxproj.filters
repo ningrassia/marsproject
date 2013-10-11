@@ -30,6 +30,9 @@
     <ClCompile Include="Mars.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -44,5 +47,27 @@
     <ClInclude Include="Mars.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mars.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="mars_med_rez.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="mars_low_rez.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="phong_shader.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="phong_shader.vert">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -22,3 +22,5 @@ texture mars?
 Starbucks.
 Modify mars mesh on-the-fly - environment destruction? shoot mountains away?
 Adjust scaling factor of Mars - how jagged can we make it?
+Shadow?
+Spaceship mounted light?

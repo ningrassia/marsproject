@@ -1,8 +1,14 @@
 #include "Mesh.h"
 
+/* A Mesh contains:
+*  - vertices
+*  - connectivity information
+*  - attribute data
+*/
 
-Mesh::Mesh(void)
+Mesh::Mesh(int height, int width)
 {
+
 }
 
 
