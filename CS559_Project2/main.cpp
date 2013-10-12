@@ -1,17 +1,27 @@
 //info on file streams from http://www.cplusplus.com/reference/fstream/fstream/open/
+//CheckGLErrors based off of code from OGLTTA example
+//also lots of general ideas taken from the OGLTTA example
 
 #include <iostream>
 #include <fstream>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
+#include <gl/glew.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp> 
 #include <math.h>
+#include <vector>
 #include "Light.h"
 #include "Mars.h"
 #include "Spaceship.h"
 #include "Starfield.h"
+#include "Shader.h"
 
 using namespace std;
 using namespace glm;
+
+
+
 
 void DisplayFunc()
 {
@@ -31,6 +41,7 @@ void ReshapeFunc(int w, int h)
 
 void CloseFunc()
 {
+	shader.TakeDown();
 	glutLeaveMainLoop();
 }
 
@@ -46,6 +57,8 @@ void SpecialFunc(int key, int x, int y)
 
 void TimerFunc(int value)
 {
+	//check to make sure our window is still here before we redisplay?
+	//perhaps?
 	glutPostRedisplay();
 }
 
@@ -89,6 +102,14 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
+	//also initialize our shader
+	if(!shader.Initialize("phong_shader.frag","phong_shader.vert"))
+	{
+		CloseFunc();
+		return -1;
+	}
+
+
 	//here we create our objects!
 
 	//our file! open in read mode only!
@@ -109,7 +130,7 @@ int main(int argc, char * argv[])
 	Light ourLight = Light(ourLight_info);
 	
 	//our planet
-	Mars mars = Mars();
+	Mars mars = Mars(marsfs);
 
 	//our ship
 	Spaceship ship = Spaceship();

@@ -14,11 +14,11 @@ Mars::Mars(fstream marsfs)
 
 
 	//Need to use the filestream marsfs to set height and width, then create the mesh.
-	/*
-	Mesh marsMesh;
+	//Mesh marsMesh;
 	int height;
 	int width;
-	*/
+	
+	//get first two ints from the file to get height and width!
 
 	
 }
