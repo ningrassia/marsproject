@@ -53,7 +53,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\freeglut-2.8.1\include;C:\Program Files %28x86%29\glew-1.7.0\include;C:\Program Files %28x86%29\glm-0.9.4.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\freeglut-2.8.1\include;C:\Program Files %28x86%29\glew-1.7.0\include;C:\Program Files %28x86%29\glm-0.9.4.5;%(AdditionalIncludeDirectories);C:\Program Files %28x86%29\glm-0.9.4.5</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -72,7 +72,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\freeglut-2.8.1\include;C:\Program Files %28x86%29\glew-1.7.0\include;C:\Program Files %28x86%29\glm-0.9.4.5\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\freeglut-2.8.1\include;C:\Program Files %28x86%29\glew-1.7.0\include;C:\Program Files %28x86%29\glm-0.9.4.5\glm;%(AdditionalIncludeDirectories);C:\Program Files %28x86%29\glm-0.9.4.5</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

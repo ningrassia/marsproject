@@ -22,9 +22,6 @@
 using namespace std;
 using namespace glm;
 
-
-
-
 void DisplayFunc()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -75,6 +72,7 @@ int main(int argc, char * argv[])
 	//set up some constants
 	static const double light_distance = 80.0;
 
+	
 	//make sure we have a filename in argv! argc must equal 2
 	if(argc != 2){
 		cout << "Don't forget to specify a Mars data file! Good luck next time!" << endl;

@@ -39,7 +39,8 @@ void Mesh::flatMesh()
 	{
 		for(int j = 0; j < mesh_dimensions.x; j++)
 		{
-			
+			vertexInfo info = {vec3(j, i, 0), vec3(0.7f, 0.2f, 0.2f)};
+			vertexList.push_back(info);
 		}
 	}
 
