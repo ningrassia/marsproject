@@ -18,6 +18,7 @@ public:
 	float shininess; //the exponent in the specular equation!
 	};
 
+	Light();
 	Light(lightInfo light_info);
 
 	~Light(void);

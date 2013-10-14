@@ -4,18 +4,20 @@
 
 #include <iostream>
 #include <fstream>
-#include <gl/freeglut.h>
-#include <glm/glm.hpp>
-#include <gl/glew.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
 #include <math.h>
 #include <vector>
+#include <gl/glew.h>
+#include <gl/freeglut.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp> 
+
+#include "Shader.h"
 #include "Light.h"
 #include "Mars.h"
 #include "Spaceship.h"
 #include "Starfield.h"
-#include "Shader.h"
+
 
 using namespace std;
 using namespace glm;
@@ -29,7 +31,9 @@ void DisplayFunc()
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 
-	//draw our objects
+	//Blatantly ripping off the structure of OGLTTA
+	//Use an enum to go through the list of possible states
+
 
 	glutSwapBuffers();
 }
@@ -41,7 +45,6 @@ void ReshapeFunc(int w, int h)
 
 void CloseFunc()
 {
-	shader.TakeDown();
 	glutLeaveMainLoop();
 }
 
@@ -102,21 +105,18 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
+	/* We want a shader per object maybe.
 	//also initialize our shader
 	if(!shader.Initialize("phong_shader.frag","phong_shader.vert"))
 	{
 		CloseFunc();
 		return -1;
 	}
+	*/
 
 
 	//here we create our objects!
 
-	//our file! open in read mode only!
-	fstream marsfs;
-	marsfs.open(argv[1], fstream::in);
-
-	
 	//our light
 	Light::lightInfo ourLight_info =
 	{
@@ -129,8 +129,8 @@ int main(int argc, char * argv[])
 	};
 	Light ourLight = Light(ourLight_info);
 	
-	//our planet
-	Mars mars = Mars(marsfs);
+	//our planet - create the file in mars class!
+	Mars mars = Mars(argv[1]);
 
 	//our ship
 	Spaceship ship = Spaceship();

@@ -1,11 +1,16 @@
 #include "Light.h"
 
 
-Light::Light(void)
+Light::Light()
 {
 }
 
+Light::Light(lightInfo info)
+{
 
-Light::~Light(void)
+}
+
+
+Light::~Light()
 {
 }

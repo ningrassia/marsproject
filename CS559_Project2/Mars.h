@@ -6,14 +6,17 @@
 class Mars
 {
 public:
-	Mars(fstream marsfs);
+	Mars(char* filename);
 	~Mars(void);
 private:
-	static const vec3 color;
+	vec3 color;
 	Mesh marsMesh;
 	int height;
 	int width;
 	double radius;
+	double temp_elevation;
 	float scale_factor; //factor to scale the mars data by
+	vector<double> elevation_array;
+	ifstream marsfile;
 };
 

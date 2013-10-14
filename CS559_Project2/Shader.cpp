@@ -7,8 +7,6 @@
 #include <sstream>
 #include <vector>
 #include <assert.h>
-
-#include <GL/GL.h>
 #include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
@@ -160,4 +158,9 @@ stringstream Shader::GetShaderLog(GLuint shader_id)
 		delete [] buffer;
 	}
 	return s;
+}
+
+bool Shader::CheckGLErrors()
+{
+	return false;
 }

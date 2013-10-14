@@ -16,14 +16,23 @@ public:
 		vec3 color;
 		//maybe material stuff but later.
 	};
-		
-	Mesh(int height, int width, int type);
+	
+	static const int FLAT_MESH = 0;
+	static const int SPHERE_MESH = 1;
+	static const int CYLINDER_MESH = 2;
+
+	Mesh();
+	Mesh(int height, int width, int type/*, vector<double> detail_vector*/);
 	~Mesh(void);
 
 private:
 	vector<vertexInfo> vertexList;
-	static const int FLAT_MESH;
-	static const int SPHERE_MESH;
-	static const int CYLINDER_MESH;
+	vector<vec3> connectivityList;
+	vec2 mesh_dimensions;
+
+	void flatMesh();
+	void sphereMesh();
+	void cylinderMesh();
+
 };
 

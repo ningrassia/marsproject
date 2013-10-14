@@ -2,6 +2,7 @@
 //Shader class taken from OGLTTA example
 //Also uses code from OpenGL 4.0 Shading Language Cookbook by David Wolff.
 
+#include <Gl/glew.h>
 #include <glm/glm.hpp>
 #include <GL/freeglut.h>
 #include <sstream>
@@ -28,5 +29,5 @@ public:
 
 private:
 	bool CheckGLErrors();
-}shader;
+};
 
