@@ -6,7 +6,9 @@
 class Mars
 {
 public:
-	Mars(char* filename);
+	// TEMP: File not implemented yet
+	// Mars(char* filename);
+	Mars();
 	~Mars(void);
 private:
 	vec3 color;
@@ -17,6 +19,6 @@ private:
 	double temp_elevation;
 	float scale_factor; //factor to scale the mars data by
 	vector<double> elevation_array;
-	ifstream marsfile;
+	//ifstream marsfile;
 };
 
