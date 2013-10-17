@@ -24,3 +24,11 @@ Modify mars mesh on-the-fly - environment destruction? shoot mountains away?
 Adjust scaling factor of Mars - how jagged can we make it?
 Shadow?
 Spaceship mounted light?
+
+CODING STANDARDS:
+Variables named with underscore, all lowercase
+	e.g.: int scooter_count
+Functions named in camelcase, uppercase first word
+	e.g.: void AddWheel()
+Curly brackets: you like to do next line. I like to do same line except for functions.
+	...we'll talk about that one.

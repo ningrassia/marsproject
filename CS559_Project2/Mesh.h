@@ -26,13 +26,13 @@ public:
 	~Mesh(void);
 
 private:
-	vector<vertexInfo> vertexList;
-	vector<vec3> connectivityList;
+	vector<vertexInfo> vertex_list;
+	vector<vec3> triangle_list;
 	vec2 mesh_dimensions;
 
-	void flatMesh();
-	void sphereMesh();
-	void cylinderMesh();
+	void FlatMesh();
+	void SphereMesh();
+	void CylinderMesh();
 
 };
 

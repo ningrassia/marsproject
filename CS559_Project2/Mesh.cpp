@@ -20,19 +20,20 @@ Mesh::Mesh(int width, int height, int type/*, vector<double> detail_vector*/)
 	switch(type)
 	{
 			case FLAT_MESH:
-				flatMesh();
+				FlatMesh();
 				break;
 			case SPHERE_MESH:
-				sphereMesh();
+				SphereMesh();
 				break;
 			case CYLINDER_MESH:
-				cylinderMesh();
+				CylinderMesh();
 				break;
 	}
 
 }
 
-void Mesh::flatMesh()
+
+void Mesh::FlatMesh()
 {
 	//generate our vertices
 	for(int i = 0; i < mesh_dimensions.y; i++)
@@ -40,21 +41,26 @@ void Mesh::flatMesh()
 		for(int j = 0; j < mesh_dimensions.x; j++)
 		{
 			vertexInfo info = {vec3(j, i, 0), vec3(0.7f, 0.2f, 0.2f)};
-			vertexList.push_back(info);
+			vertex_list.push_back(info);
 		}
 	}
 
-	//generate our connectivity! this is the not-fun part!
+	for(int i = 0; i < vertex_list.size(); i++)
+	{
+		vec2 vertex_location = vec2(i % (int)mesh_dimensions.x, i % (int)mesh_dimensions.y);
+		// TODO: cases for upper/lower/left/right edges
+		// TODO: write function to get surrounding points
+	}
 	
 	return;
 }
 
-void Mesh::sphereMesh()
+void Mesh::SphereMesh()
 {
 
 }
 
-void Mesh::cylinderMesh()
+void Mesh::CylinderMesh()
 {
 
 }
