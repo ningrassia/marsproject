@@ -34,7 +34,7 @@ Mars::Mars(/*char * filename*/)
 	// TEMP: commented out
 	//marsfile >> width;
 	//marsfile >> height
-	height =0;
+	height = 0;
 	width = 0;
 
 	//create our array of elevation info! 
@@ -53,7 +53,7 @@ Mars::Mars(/*char * filename*/)
 	}
 
 	//create a mesh!
-	Mesh marsMesh = Mesh(width, height, Mesh::SPHERE_MESH);
+	PlanarMesh marsMesh = PlanarMesh(width, height, PlanarMesh::SPHERE_MESH);
 	
 }
 

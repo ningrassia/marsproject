@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "PlanarMesh.h"
 
 /* A Mesh contains:
@@ -20,7 +22,6 @@ PlanarMesh::PlanarMesh(int width, int height, int type/*, vector<double> detail_
 
 }
 
-
 void PlanarMesh::Initialize()
 {
 	//generate our vertices
@@ -35,13 +36,110 @@ void PlanarMesh::Initialize()
 
 	for(int i = 0; i < vertex_list.size(); i++)
 	{
-		vec2 vertex_location = vec2(i % (int)mesh_dimensions.x, i % (int)mesh_dimensions.y);
-		// TODO: cases for upper/lower/left/right edges
-		// TODO: write function to get surrounding points
+		// find out which row/column each point is in
+		// vec2 vertex_location = vec2(i / (int)mesh_dimensions.x, i  % (int)mesh_dimensions.y);
+
+		vector<int> adjecent_vertices = FindAdjacentVertices(i);
 	}
 	
 	return;
 }
+
+vector<int> PlanarMesh::FindAdjacentVertices(int index)
+{
+	vector<int> adj_indices;
+
+	// Vector has 8 indixes, starting at UL corner, clockwise to L
+	for(int h = -1; h < 2; h++) {
+		for(int v = -1; v < 2; v++) {
+			// UL
+			if(OutOfBounds(index, upleft)) { adj_indices.push_back(-1); } 
+			else { adj_indices.push_back(index - mesh_dimensions.x - 1); }
+			// U
+			if(OutOfBounds(index, up)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index - mesh_dimensions.x); }
+			// UR
+			if(OutOfBounds(index, upright)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index - mesh_dimensions.x + 1); }
+			// R
+			if(OutOfBounds(index, right)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index + 1); }
+			// DR
+			if(OutOfBounds(index, downright)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index + mesh_dimensions.x + 1); }
+			// D
+			if(OutOfBounds(index, down)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index + mesh_dimensions.x); }
+			// DL
+			if(OutOfBounds(index, downleft)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index + mesh_dimensions.x - 1); }
+			// L
+			if(OutOfBounds(index, left)) { adj_indices.push_back(-1); }
+			else { adj_indices.push_back(index -1); }
+		}
+	}
+	return adj_indices;
+}
+
+bool PlanarMesh::OutOfBounds(int index, direction dir)
+{
+	bool oob = false;
+
+	switch(dir) {
+		case upleft:
+			// Check L and then U
+			if(index % (int)mesh_dimensions.x == 0 || index / (int)mesh_dimensions.y == 0) {
+				oob = true;
+			}
+			break;
+		case up:
+			// check U
+			if(index / (int)mesh_dimensions.y == 0) {
+				oob = true;
+			}
+			break;
+		case upright:
+			// check R and then U
+			if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1 || index / (int)mesh_dimensions.y == 0) {
+				oob = true;
+			}
+			break;
+		case right:
+			// check R
+			if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1) {
+				oob = true;
+			}
+			break;
+		case downright:
+			// check R and then D
+			if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1 || index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+				oob = true;
+			}
+			break;
+		case down:
+			// check D
+			if(index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+				oob = true;
+			}
+			break;
+		case downleft:
+			// check L and then D
+			if(index % (int)mesh_dimensions.x == 0 || index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+				oob = true;
+			}
+			break;
+		case left:
+			// check L
+			if(index % (int)mesh_dimensions.x == 0) {
+				oob = true;
+			}
+			break;
+		default:
+			cout << "invalid direction sent into PlanarMesh::IsOutOfBounds" << endl;
+	}
+	return oob;
+}
+
 
 PlanarMesh::~PlanarMesh(void)
 {

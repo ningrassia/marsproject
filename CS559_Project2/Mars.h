@@ -1,7 +1,7 @@
 #pragma once
 
 #include <fstream>
-#include "Mesh.h"
+#include "PlanarMesh.h"
 
 class Mars
 {
@@ -12,7 +12,7 @@ public:
 	~Mars(void);
 private:
 	vec3 color;
-	Mesh marsMesh;
+	PlanarMesh marsMesh;
 	int height;
 	int width;
 	double radius;
