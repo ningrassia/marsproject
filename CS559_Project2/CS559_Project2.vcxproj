@@ -84,22 +84,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CylinderMesh.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mars.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PlanarMesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Spaceship.cpp" />
+    <ClCompile Include="SphereMesh.cpp" />
     <ClCompile Include="Starfield.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CylinderMesh.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mars.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PlanarMesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Spaceship.h" />
+    <ClInclude Include="SphereMesh.h" />
     <ClInclude Include="Starfield.h" />
   </ItemGroup>
   <ItemGroup>
