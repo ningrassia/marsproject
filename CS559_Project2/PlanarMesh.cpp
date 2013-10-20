@@ -37,7 +37,22 @@ void PlanarMesh::Initialize()
 	// generate out triangles
 	for(int i = 0; i < vertex_list.size(); i++)
 	{
-		vector<int> adjecent_vertices = FindAdjacentVertices(i);
+		// Get the 9 adjacent points
+		vector<int> adjacent_vertices = FindAdjacentVertices(i);
+
+		// Connect two traingles /| to the left and |/ to the right
+		// Do not connect /| if L is out of bounds, left edge
+		// Do not connect |/ if R is out of bounds, right edge
+		// Treat top edge normally and skip bottom edge
+		// adjacent_vertices = [0.ul 1.u 2.ur 3.r 4.dr 5.d 6.dl 7.l] 
+
+		if(adjacent_vertices[7] != -1) {
+			triangle_list.push_back(vec3(i, adjacent_vertices[down], adjacent_vertices[downleft]));
+		}
+
+		if(adjacent_vertices[3] != -1) {
+			triangle_list.push_back(vec3(i, adjacent_vertices[right], adjacent_vertices[down]));
+		}
 	}
 	
 	return;
@@ -73,7 +88,7 @@ vector<int> PlanarMesh::FindAdjacentVertices(int index)
 			else { adj_indices.push_back(index + mesh_dimensions.x - 1); }
 			// L
 			if(OutOfBounds(index, left)) { adj_indices.push_back(-1); }
-			else { adj_indices.push_back(index -1); }
+			else { adj_indices.push_back(index - 1); }
 		}
 	}
 	return adj_indices;
@@ -81,6 +96,8 @@ vector<int> PlanarMesh::FindAdjacentVertices(int index)
 
 bool PlanarMesh::OutOfBounds(int index, direction dir)
 {
+	// TODO: ONLY L AND R ARE NECESSARY
+	// REWRITE
 	bool oob = false;
 
 	switch(dir) {

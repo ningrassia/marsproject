@@ -18,19 +18,20 @@ public:
 		vec3 color;
 		//maybe material stuff but later.
 	}vertexInfo;	
+
 	static const int FLAT_MESH = 0;
 	static const int SPHERE_MESH = 1;
 	static const int CYLINDER_MESH = 2;
 	
 	enum direction {
-		up,
-		right,
-		down,
-		left,
-		upleft,
-		upright,
-		downright,
-		downleft
+		upleft = 0,
+		up = 1,
+		upright = 2,
+		right = 3,
+		downright = 4,
+		down = 5,
+		downleft = 6,
+		left = 7
 	};
 
 	PlanarMesh();
