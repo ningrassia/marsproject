@@ -44,14 +44,15 @@ void PlanarMesh::Initialize()
 		// Do not connect /| if L is out of bounds, left edge
 		// Do not connect |/ if R is out of bounds, right edge
 		// Treat top edge normally and skip bottom edge
-		// adjacent_vertices = [0.ul 1.u 2.ur 3.r 4.dr 5.d 6.dl 7.l] 
 
-		if(adjacent_vertices[7] != -1) {
-			triangle_list.push_back(vec3(i, adjacent_vertices[down], adjacent_vertices[downleft]));
-		}
+		if(adjacent_vertices[down] != -1) {
+			if(adjacent_vertices[left] != -1) {
+				triangle_list.push_back(vec3(i, adjacent_vertices[down], adjacent_vertices[downleft]));
+			}
 
-		if(adjacent_vertices[3] != -1) {
-			triangle_list.push_back(vec3(i, adjacent_vertices[right], adjacent_vertices[down]));
+			if(adjacent_vertices[right] != -1) {
+				triangle_list.push_back(vec3(i, adjacent_vertices[right], adjacent_vertices[down]));
+			}
 		}
 	}
 	
