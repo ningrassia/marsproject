@@ -70,11 +70,16 @@ void DisplayFunc()
 
 void ReshapeFunc(int w, int h)
 {
-
+	if(!globals.window_closed && h > 0) {
+		globals.window_size = vec2(w, h);
+		globals.aspect_ratio = (float)(w) / (float)(h);
+		glutPostRedisplay();
+	}
 }
 
 void CloseFunc()
 {
+	globals.window_closed = true;
 	glutLeaveMainLoop();
 }
 
@@ -127,6 +132,7 @@ int main(int argc, char * argv[])
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(globals.window_size.x, globals.window_size.y);
 	glutCreateWindow("MARS");
+	globals.window_closed = false;
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ReshapeFunc);
 	glutCloseFunc(CloseFunc);

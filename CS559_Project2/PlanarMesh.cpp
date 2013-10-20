@@ -34,11 +34,9 @@ void PlanarMesh::Initialize()
 		}
 	}
 
+	// generate out triangles
 	for(int i = 0; i < vertex_list.size(); i++)
 	{
-		// find out which row/column each point is in
-		// vec2 vertex_location = vec2(i / (int)mesh_dimensions.x, i  % (int)mesh_dimensions.y);
-
 		vector<int> adjecent_vertices = FindAdjacentVertices(i);
 	}
 	
@@ -49,7 +47,7 @@ vector<int> PlanarMesh::FindAdjacentVertices(int index)
 {
 	vector<int> adj_indices;
 
-	// Vector has 8 indixes, starting at UL corner, clockwise to L
+	// adj_indices has 8 indixes, starting at UL corner, clockwise to L
 	for(int h = -1; h < 2; h++) {
 		for(int v = -1; v < 2; v++) {
 			// UL

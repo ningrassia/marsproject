@@ -1,10 +1,9 @@
 #include "Globals.h"
 
-
 Globals::Globals(void)
 {
 	this->window_size = vec2(1366, 768);
-	this->aspect_ratio = (float)(window_size.x / window_size.y);
+	this->aspect_ratio = (float)(window_size.x) / (float)(window_size.y);
 	this->window_closed = true;
 
 	this->near_plane = 5.0f;
