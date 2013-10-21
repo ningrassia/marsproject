@@ -61,10 +61,31 @@ void DisplayFunc()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(value_ptr(mv));
 
+	DrawAxes();
+
+	//TEXT
+	glColor3f(.7f, .7f, .7f);
+	mat4 orth = ortho(0.0f, (float)globals.window_size.x, 0.0f, (float)globals.window_size.y, 1.0f, 10.0f);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(value_ptr(orth));
+
+	// Look at the same place constantly, and shift the modelview matrix in front of the near plane
+	mat4 text = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	text = translate(text, vec3(0.0f, 5.0f, -1.0f));
+	text = scale(text, vec3(.25f, .25f, .25f));
+	glMatrixMode(GL_MODELVIEW);
+
+	vector<string> * s = &globals.onscreen_text;
+	for(auto i = s->begin(); i < s->end(); i++) {
+		glLoadMatrixf(value_ptr(text));
+		glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char *)(*i).c_str());
+		text = translate(text, vec3(0.0f, glutStrokeHeight(GLUT_STROKE_MONO_ROMAN), 0.0f));
+	}
+
 	//Blatantly ripping off the structure of OGLTTA
 	//Use an enum to go through the list of possible states
 
-	DrawAxes();
+	
 	glutSwapBuffers();
 }
 
@@ -105,11 +126,6 @@ void TimerFunc(int value)
 	glutPostRedisplay();
 }
 
-bool InitializeGL()
-{
-	return true;
-}
-
 int main(int argc, char * argv[])
 {
 	//set up some constants
@@ -139,12 +155,8 @@ int main(int argc, char * argv[])
 	glutKeyboardFunc(KeyboardFunc);
 	glutSpecialFunc(SpecialFunc);
 
-	//make sure GL was initialized!
-	if(!InitializeGL())
-	{
-		CloseFunc();
-		return -1;
-	}
+	// Add onscreen text to string vector
+	globals.onscreen_text.push_back("Esc to close");
 
 	/* We want a shader per object maybe.
 	//also initialize our shader

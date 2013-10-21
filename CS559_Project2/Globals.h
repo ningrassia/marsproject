@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <vector>
 
 using namespace glm;
 
@@ -14,5 +15,7 @@ public:
 	float near_plane, far_plane, fov;
 
 	bool wireframe_enabled;
+	
+	std::vector<std::string> onscreen_text;
 };
 
