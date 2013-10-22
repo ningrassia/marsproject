@@ -37,6 +37,7 @@ public:
 	PlanarMesh();
 	PlanarMesh(int height, int width, int type/*, vector<double> detail_vector*/);
 	void Initialize();
+	void PlanarMesh::Draw(mat4 mv, mat4 p, Light light, Shader shader);
 	~PlanarMesh(void);
 
 private:

@@ -31,6 +31,14 @@ Shader::Shader()
 	this->program_id = (GLuint) -1;
 	this->modelview_matrix_handle = (GLuint) -1;
 	this->projection_matrix_handle = (GLuint) -1;
+	this->mvp_handle = (GLuint) -1;
+	this->normal_matrix_handle = (GLuint) -1;
+	this->light_position_handle = (GLuint) -1;
+	this->light_intensity_handle = (GLuint) -1;
+	this->diffuse_handle = (GLuint) -1;
+	this->ambient_handle = (GLuint) -1;
+	this->specular_handle = (GLuint) -1;
+	this->shininess_handle = (GLuint) -1;
 }
 
 void Shader::Use()
@@ -82,6 +90,14 @@ bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
 	glUseProgram(this->program_id);
 	this->modelview_matrix_handle = glGetUniformLocation(program_id, (const GLchar *) "modelview_matrix");
 	this->projection_matrix_handle = glGetUniformLocation(program_id, (const GLchar *) "projection_matrix");
+	this->mvp_handle = glGetUniformLocation(program_id, (const GLchar *) "mvp");
+	this->normal_matrix_handle = glGetUniformLocation(program_id, (const GLchar *) "normal_matrix");
+	this->light_position_handle = glGetUniformLocation(program_id, (const GLchar *) "light_position");
+	this->light_intensity_handle = glGetUniformLocation(program_id, (const GLchar *) "light_intensity");
+	this->ambient_handle = glGetUniformLocation(program_id, (const GLchar *) "ambient");
+	this->diffuse_handle = glGetUniformLocation(program_id, (const GLchar *) "diffuse");
+	this->specular_handle = glGetUniformLocation(program_id, (const GLchar *) "specular");
+	this->shininess_handle = glGetUniformLocation(program_id, (const GLchar *) "shininess");
 	glUseProgram(0);
 
 	return !CheckGLErrors();

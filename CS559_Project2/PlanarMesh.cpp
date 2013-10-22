@@ -1,7 +1,12 @@
 #include <iostream>
 
-#include "PlanarMesh.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp> 
 
+#include "PlanarMesh.h"
+#include "Light.h"
+#include "Shader.h"
 /* A Mesh contains:
 *  - vertices
 *  - connectivity information
@@ -156,6 +161,45 @@ bool PlanarMesh::OutOfBounds(int index, direction dir)
 	return oob;
 }
 
+//This is where we draw the mesh or whatever!
+void PlanarMesh::Draw(mat4 mv, mat4 p, Light light, Shader shader)
+{
+
+	//Only need to do this if they're not set up already???
+	//We need to set up the vectors for our vertex/color data
+
+	//we need to generate the vertex arrays, bind them, and enable them!
+
+	//we need to generate attribute arrays, bind them, and enable them!
+
+	//we need to enable our shader!
+	shader.Use();
+	//we need to set up our uniform values!
+
+	//do some calculations for normal and mvp matrices!
+	glm::mat4 mvp = mv * p;
+	glm::mat3 normal_matrix = inverse(transpose((mat3)mv));
+
+	//define all our uniforms!
+	glUniformMatrix4fv(shader.modelview_matrix_handle, 1, GL_FALSE, glm::value_ptr(mv));
+	glUniformMatrix4fv(shader.projection_matrix_handle, 1, GL_FALSE, glm::value_ptr(p));
+	glUniformMatrix4fv(shader.mvp_handle, 1, GL_FALSE, glm::value_ptr(mvp));
+	glUniformMatrix3fv(shader.light_position_handle, 1, GL_FALSE, glm::value_ptr(light.light_info.light_position));
+	glUniformMatrix4fv(shader.light_intensity_handle, 1, GL_FALSE, glm::value_ptr(light.light_info.light_intensity));
+	glUniformMatrix3fv(shader.diffuse_handle, 1, GL_FALSE, glm::value_ptr(light.light_info.diffuse));
+	glUniformMatrix3fv(shader.ambient_handle, 1, GL_FALSE, glm::value_ptr(light.light_info.ambient));
+	glUniformMatrix3fv(shader.specular_handle, 1, GL_FALSE, glm::value_ptr(light.light_info.specular));
+	glUniform1f(shader.shininess_handle, (light.light_info.shininess));
+	//we need to set up our viewport? maybe here? maybe somewhere else? main probably?
+
+	//we need to call glDrawArrays or glDrawElements!
+
+	//we need to unbind
+	glBindVertexArray(0);
+	//we need to stop the shader program.
+	glUseProgram(0);
+
+}
 
 PlanarMesh::~PlanarMesh(void)
 {

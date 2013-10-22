@@ -63,7 +63,7 @@ void DisplayFunc()
 
 	DrawAxes();
 
-	//TEXT
+	//TEXT wait - can we do this with the oldschool opengl?
 	glColor3f(.7f, .7f, .7f);
 	mat4 orth = ortho(0.0f, (float)globals.window_size.x, 0.0f, (float)globals.window_size.y, 1.0f, 10.0f);
 	glMatrixMode(GL_PROJECTION);

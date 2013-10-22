@@ -20,6 +20,14 @@ public:
 
 	GLuint modelview_matrix_handle;
 	GLuint projection_matrix_handle;
+	GLuint mvp_handle;
+	GLuint normal_matrix_handle;
+	GLuint light_position_handle;
+	GLuint light_intensity_handle;
+	GLuint diffuse_handle;
+	GLuint ambient_handle;
+	GLuint specular_handle;
+	GLuint shininess_handle;
 
 	GLuint vertex_shader_id;
 	GLuint fragment_shader_id;
