@@ -1,4 +1,4 @@
-#Taken from Perry Kivolowitz's Modern GL Example
+//Taken from Perry Kivolowitz's Modern GL Example
 
 #version 400
 

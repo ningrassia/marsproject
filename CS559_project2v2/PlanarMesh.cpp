@@ -88,10 +88,10 @@ bool PlanarMesh::Initialize(int height, int width)
 			{
 				// CONNECT LEFT TRIANGLE
 				this->vertex_indices.push_back(index);
-				this->vertex_indices.push_back(index + (width - 1));
 				this->vertex_indices.push_back(index + width);
+				this->vertex_indices.push_back(index + (width - 1));
 
-				this->BuildNormalVisualizationGeometry();
+				//this->BuildNormalVisualizationGeometry();
 			}
 
 			//Check for right, then generate right-style tri
@@ -99,16 +99,21 @@ bool PlanarMesh::Initialize(int height, int width)
 			{
 				// CONNECT RIGHT TRIANGLE
 				this->vertex_indices.push_back(index);
-				this->vertex_indices.push_back(index + width);
 				this->vertex_indices.push_back(index + 1);
+				this->vertex_indices.push_back(index + width);
 
-				this->BuildNormalVisualizationGeometry();
+				//this->BuildNormalVisualizationGeometry();
 			}
 		}
 	}
 
 	// Phong shader for mesh
 	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCN), &this->vertex_list[0]))
+	{
+		return false;
+	}
+
+	if(this->GLReturnedError("PlanarMesh::Initialize - after PostGLInit"))
 	{
 		return false;
 	}
@@ -124,29 +129,39 @@ bool PlanarMesh::Initialize(int height, int width)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	// Solid Shader for normals
-	if (this->normal_vertices.size() > 0)
-	{
-		if (!this->PostGLInitialize(&this->normal_array_handle, &this->normal_coordinate_handle, this->normal_vertices.size() * sizeof(VertexAttributesP), &this->normal_vertices[0]))
-			return false;
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-	}
-
-	if (!this->shader.Initialize("top_shader.vert", "top_shader.frag"))
+	if(this->GLReturnedError("PlanarMesh::Initialize - after attribute poniter"))
 	{
 		return false;
 	}
 
-	if (!this->solid_color.Initialize("solid_shader.vert", "solid_shader.frag"))
+	//// Solid Shader for normals
+	//if (this->normal_vertices.size() > 0)
+	//{
+	//	if (!this->PostGLInitialize(&this->normal_array_handle, &this->normal_coordinate_handle, this->normal_vertices.size() * sizeof(VertexAttributesP), &this->normal_vertices[0]))
+	//		return false;
+
+	//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
+	//	glEnableVertexAttribArray(0);
+	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//	glBindVertexArray(0);
+	//}
+
+	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
 	{
 		return false;
 	}
 
-	return true; // temp
+	if(this->GLReturnedError("PlanarMesh::Initialize - after shader Init"))
+	{
+		return false;
+	}
+
+	//if (!this->solid_color.Initialize("solid_shader.vert", "solid_shader.frag"))
+	//{
+	//	return false;
+	//}
+
+	return true;
 }
 
 void PlanarMesh::TakeDown()
@@ -159,7 +174,9 @@ void PlanarMesh::TakeDown()
 void PlanarMesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
 {
 	if(this->GLReturnedError("PlanarMesh::Draw - on entry"))
+	{
 		return;
+	}
 
 	glEnable(GL_DEPTH_TEST);
 

@@ -88,6 +88,7 @@ void DisplayOnscreenText()
 
 void DisplayFunc()
 {
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
@@ -101,14 +102,18 @@ void DisplayFunc()
 
 	mat4 mv(1.0f);
 	//Temporary lookat
-	mv = lookAt(vec3(20.0, 20.0, 20.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 0.0));
+	mv = lookAt(vec3(0.0, 0.0, 10.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 0.0));
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(value_ptr(mv));
 
-	DrawAxes();
+	
 
 	// current_time may not be part of globals
 	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+	//draw axes last? don't know why
+	//DrawAxes();
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
@@ -133,11 +138,14 @@ void ReshapeFunc(int w, int h)
 void CloseFunc()
 {
 	globals.window_closed = true;
+	mesh.TakeDown();
 	glutLeaveMainLoop();
 }
 
 void KeyboardFunc(unsigned char c, int x, int y)
 {
+	globals.current_time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
+
 	switch(c) {
 		case 'x':
 		case 27:
@@ -180,6 +188,12 @@ int main(int argc, char * argv[])
 
 	// Add onscreen text to string vector
 	globals.onscreen_text.push_back("Esc to close");
+
+	if (glewInit() != GLEW_OK)
+	{
+		cerr << "GLEW failed to initialize." << endl;
+		return 0;
+	}
 
 	// initialize our friggin' PlanarMesh
 	if(!mesh.Initialize(4,4))
