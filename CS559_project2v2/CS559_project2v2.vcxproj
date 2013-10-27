@@ -15,12 +15,14 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PlanarMesh.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Starfield.cpp" />
     <ClCompile Include="VertexAttributes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object.h" />
     <ClInclude Include="PlanarMesh.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Starfield.h" />
     <ClInclude Include="VertexAttributes.h" />
   </ItemGroup>
   <ItemGroup>

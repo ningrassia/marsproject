@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "PlanarMesh.h"
+#include "Starfield.h"
 
 using namespace std;
 using namespace glm;
@@ -48,6 +49,7 @@ Globals::Globals()
 }
 
 PlanarMesh mesh;
+Starfield starfield;
 
 void DrawAxes()
 {
@@ -109,7 +111,10 @@ void DisplayFunc()
 	
 
 	// current_time may not be part of globals
-	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	//mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+	// also draw a starfield
+	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	//draw axes last? don't know why
 	//DrawAxes();
@@ -139,6 +144,7 @@ void CloseFunc()
 {
 	globals.window_closed = true;
 	mesh.TakeDown();
+	starfield.TakeDown();
 	glutLeaveMainLoop();
 }
 
@@ -196,10 +202,18 @@ int main(int argc, char * argv[])
 	}
 
 	// initialize our friggin' PlanarMesh
-	if(!mesh.Initialize(4,4))
+	/*if(!mesh.Initialize(4,4))
 	{
 		return 0;
 	}
+	*/
+	// initialize a starfield
+	
+	if(!starfield.Initialize(2.0,8.0,100))
+	{
+		return 0;
+	}
+	
 	glutMainLoop();
 	return 0;
 }
