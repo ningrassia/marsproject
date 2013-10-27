@@ -126,6 +126,7 @@ bool PlanarMesh::Initialize(int height, int width)
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	//free our buffer and vertex array!
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 

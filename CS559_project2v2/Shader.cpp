@@ -38,16 +38,16 @@ Shader::Shader()
 
 void Shader::CommonSetup(const float time, const GLint * size, const GLfloat * projection, const GLfloat * modelview, const GLfloat * mvp, const GLfloat * nm)
 {
-	//not currently using all of these.
-	//if (this->time_handle != BAD_GL_VALUE)
-	//	glUniform1f(this->time_handle, time);
-	//this->GLReturnedError("Shader::CommonSetup - after time_handle");
-	//if (this->size_handle != BAD_GL_VALUE)
-	//	glUniform2iv(this->size_handle, 1, size);
-	//this->GLReturnedError("Shader::CommonSetup - after size_handle");
-	//if (this->projection_matrix_handle != BAD_GL_VALUE)
-	//	glUniformMatrix4fv(this->projection_matrix_handle, 1, GL_FALSE, projection);
-	//this->GLReturnedError("Shader::CommonSetup - after projection_matrix_handle");
+
+	if (this->time_handle != BAD_GL_VALUE)
+		glUniform1f(this->time_handle, time);
+	this->GLReturnedError("Shader::CommonSetup - after time_handle");
+	if (this->size_handle != BAD_GL_VALUE)
+		glUniform2iv(this->size_handle, 1, size);
+	this->GLReturnedError("Shader::CommonSetup - after size_handle");
+	if (this->projection_matrix_handle != BAD_GL_VALUE)
+		glUniformMatrix4fv(this->projection_matrix_handle, 1, GL_FALSE, projection);
+	this->GLReturnedError("Shader::CommonSetup - after projection_matrix_handle");
 	if (this->modelview_matrix_handle != BAD_GL_VALUE)
 		glUniformMatrix4fv(this->modelview_matrix_handle, 1, GL_FALSE, modelview);
 	this->GLReturnedError("Shader::CommonSetup - after modelview_matrix_handle");
@@ -113,11 +113,11 @@ bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
 	//right now we aren't using all of these. 
 
 	this->modelview_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "modelview_matrix");
-	//this->projection_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "projection_matrix");
+	this->projection_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "projection_matrix");
 	this->normal_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "normal_matrix");
 	this->mvp_handle = glGetUniformLocation(this->program_id, (const GLchar *) "mvp");
-	//this->size_handle = glGetUniformLocation(this->program_id, (const GLchar *) "size");
-	//this->time_handle = glGetUniformLocation(this->program_id, (const GLchar *) "time");
+	this->size_handle = glGetUniformLocation(this->program_id, (const GLchar *) "size");
+	this->time_handle = glGetUniformLocation(this->program_id, (const GLchar *) "time");
 
 	glUseProgram(0);
 

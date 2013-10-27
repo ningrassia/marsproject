@@ -1,5 +1,7 @@
 /* Comment header */
 
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <vector>
 #include <gl/glew.h>
@@ -7,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <math.h>
 
 #include "PlanarMesh.h"
 #include "Starfield.h"
@@ -27,7 +30,10 @@ public:
 	bool wireframe_enabled;
 	bool paused;
 	float current_time, time_last_pause_began, total_time_paused;
-	
+	float period;
+
+	float horiz_cam_angle, vert_cam_angle, cam_radius;
+
 	vector<std::string> onscreen_text;
 } globals;
 
@@ -37,7 +43,7 @@ Globals::Globals()
 	this->aspect_ratio = (float)(window_size.x) / (float)(window_size.y);
 	this->window_closed = true;
 
-	this->near_plane = 5.0f;
+	this->near_plane = 1.0f;
 	this->far_plane = 50.0f;
 	this->fov = 50.0f;
 
@@ -46,10 +52,21 @@ Globals::Globals()
 	this->current_time = 0;
 	this->time_last_pause_began = 0;
 	this->total_time_paused = 0;
+	this->period = 1000 / 60;
+
+	this->horiz_cam_angle = 10;
+	this->vert_cam_angle = 10;
+	this->cam_radius = 5;
 }
 
 PlanarMesh mesh;
 Starfield starfield;
+
+// Utility function for conversion from degree to radians
+float toRadian(float d)
+{
+	return (float)(d / 180.0f * M_PI);
+}
 
 void DrawAxes()
 {
@@ -90,7 +107,6 @@ void DisplayOnscreenText()
 
 void DisplayFunc()
 {
-
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
@@ -103,18 +119,23 @@ void DisplayFunc()
 	glLoadMatrixf(value_ptr(proj));
 
 	mat4 mv(1.0f);
-	//Temporary lookat
-	mv = lookAt(vec3(0.0, 0.0, 10.0), vec3(0.0, 1.0, 0.0), vec3(0.0, 1.0, 0.0));
+	//Temporary lookat - always looking at the center point?
+	vec3 eyePos = vec3(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle)),
+						(globals.cam_radius * sin(toRadian(globals.vert_cam_angle))),
+						(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle))));
+	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(value_ptr(mv));
 
 	
 
+	
+
 	// current_time may not be part of globals
-	//mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
-	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	//starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	//draw axes last? don't know why
 	//DrawAxes();
@@ -162,13 +183,30 @@ void KeyboardFunc(unsigned char c, int x, int y)
 
 void SpecialFunc(int key, int x, int y)
 {
-
+	switch(key)	{
+	case GLUT_KEY_LEFT:
+		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 1.0f), 360.0f);
+		break;
+	case GLUT_KEY_RIGHT:
+		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 1.0f), 360.0f);
+		break;
+	case GLUT_KEY_UP:
+		if(globals.vert_cam_angle < 90.0f)
+		globals.vert_cam_angle += 1.0f;
+		break;
+	case GLUT_KEY_DOWN:
+		if(globals.vert_cam_angle > -90.0f)
+		globals.vert_cam_angle -= 1.0f;
+		break;
+		break;
+	}
 }
 
 void TimerFunc(int value)
 {
 	//check to make sure our window is still here before we redisplay?
 	//perhaps?
+	glutTimerFunc(globals.period, TimerFunc, 0);
 	glutPostRedisplay();
 }
 
@@ -202,18 +240,18 @@ int main(int argc, char * argv[])
 	}
 
 	// initialize our friggin' PlanarMesh
-	/*if(!mesh.Initialize(4,4))
-	{
-		return 0;
-	}
-	*/
-	// initialize a starfield
-	
-	if(!starfield.Initialize(2.0,8.0,100))
+	if(!mesh.Initialize(4,4))
 	{
 		return 0;
 	}
 	
+	// initialize a starfield - lots of stars!
+	//if(!starfield.Initialize(6.0,8.0,10000))
+	//{
+	//	return 0;
+	//}
+	
+	glutTimerFunc(globals.period, TimerFunc, 0);
 	glutMainLoop();
 	return 0;
 }
