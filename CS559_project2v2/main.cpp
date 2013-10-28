@@ -135,7 +135,7 @@ void DisplayFunc()
 	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
-	//starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	//draw axes last? don't know why
 	//DrawAxes();
@@ -191,13 +191,12 @@ void SpecialFunc(int key, int x, int y)
 		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 1.0f), 360.0f);
 		break;
 	case GLUT_KEY_UP:
-		if(globals.vert_cam_angle < 90.0f)
+		if(globals.vert_cam_angle < 89.0f)
 		globals.vert_cam_angle += 1.0f;
 		break;
 	case GLUT_KEY_DOWN:
-		if(globals.vert_cam_angle > -90.0f)
+		if(globals.vert_cam_angle > -89.0f)
 		globals.vert_cam_angle -= 1.0f;
-		break;
 		break;
 	}
 }
@@ -239,17 +238,17 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	// initialize our friggin' PlanarMesh
+	// initialize our PlanarMesh
 	if(!mesh.Initialize(4,4))
 	{
 		return 0;
 	}
 	
 	// initialize a starfield - lots of stars!
-	//if(!starfield.Initialize(6.0,8.0,10000))
-	//{
-	//	return 0;
-	//}
+	if(!starfield.Initialize(6.0,2.0,10000))
+	{
+		return 0;
+	}
 	
 	glutTimerFunc(globals.period, TimerFunc, 0);
 	glutMainLoop();

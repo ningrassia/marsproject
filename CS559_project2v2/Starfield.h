@@ -10,7 +10,7 @@ class Starfield : public Object
 public:
 	Starfield(void);
 	void TakeDown();
-	bool Initialize(double hither, double yon, int stars);
+	bool Initialize(double inner_radius, double depth, int stars);
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
 
 	Shader solid_color;

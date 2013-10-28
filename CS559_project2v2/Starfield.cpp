@@ -9,19 +9,17 @@ using namespace std;
 using namespace glm;
 
 
+//picking a point on a sphere - technique taken from
+//http://mathworld.wolfram.com/SpherePointPicking.html
+//or will be eventually, once the dang thing works!
+
 
 Starfield::Starfield(void)
 {
 	//don't need anything special here.
 }
 
-double Starfield::toRadian(double d)
-{
-	return (double)(d / 180.0f * M_PI);
-}
-
-
-bool Starfield::Initialize(double hither, double yon, int stars)
+bool Starfield::Initialize(double inner_radius, double depth, int stars)
 {
 	// CHECK FOR ERRORS!
 	if(this->GLReturnedError("Starfield::Initialize - on entry")) 
@@ -35,7 +33,7 @@ bool Starfield::Initialize(double hither, double yon, int stars)
 	}
 
 	//check our inputs for sanity!
-	if((hither < 0) || (yon < hither) || (stars < 0))
+	if((depth <= 0) || (inner_radius <= 0) || (stars <= 0))
 	{
 		return false;
 	}
@@ -49,25 +47,25 @@ bool Starfield::Initialize(double hither, double yon, int stars)
 	srand((unsigned int)(time(NULL)));
 	#endif
 
-	//generate points for the stars, and place them in the arrays!
+	////generate points for the stars, and place them in the arrays!
 	for(int i = 0; i < stars; i++)
 	{
-		double radius = (rand() % ((int)floor(yon-hither))) + hither; //generate a radius from between hither and yon
-		double vert_angle = rand() % 180; //generate 2 angles - now we have a spherical position!
-		double horiz_angle = rand() % 360;
-		//create a new vertex with cartesian coordinates from our generated angles/radius
-		VertexAttributesP vertex = VertexAttributesP(
-			vec3((radius * sin(toRadian(vert_angle)) * cos(toRadian(horiz_angle))),
-			(radius*sin(toRadian(vert_angle)) * sin(toRadian(horiz_angle))),
-			(radius * cos(toRadian(vert_angle)))));
+		double radius = (double(rand())/double(RAND_MAX) * depth) + inner_radius;
+		double h_angle = double(rand())/double(RAND_MAX) * M_PI + (M_PI / 2.0);
+		double v_angle = double(rand())/double(RAND_MAX) * M_PI; //need to do this differently for truly random - will be distrib. near poles.
+		VertexAttributesP vertex = VertexAttributesP(vec3(
+			radius * sin(v_angle) * cos(h_angle),
+			radius * cos(v_angle),
+			radius * sin(v_angle) * sin(h_angle)));
 		this->vertex_list.push_back(vertex);
 		//since we'll just draw these vertices as points, we don't care about connectivity
 		//and just push each index on when we create a vertex
 		this->vertex_indices.push_back(i);
 	}
 
+
 	//set up our handles
-	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCN), &this->vertex_list[0]))
+	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesP), &this->vertex_list[0]))
 	{
 		return false;
 	}
