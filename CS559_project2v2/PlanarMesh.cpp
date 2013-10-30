@@ -135,17 +135,7 @@ bool PlanarMesh::Initialize(int height, int width)
 		return false;
 	}
 
-	//// Solid Shader for normals
-	//if (this->normal_vertices.size() > 0)
-	//{
-	//	if (!this->PostGLInitialize(&this->normal_array_handle, &this->normal_coordinate_handle, this->normal_vertices.size() * sizeof(VertexAttributesP), &this->normal_vertices[0]))
-	//		return false;
 
-	//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
-	//	glEnableVertexAttribArray(0);
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//	glBindVertexArray(0);
-	//}
 
 	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
 	{
@@ -157,10 +147,7 @@ bool PlanarMesh::Initialize(int height, int width)
 		return false;
 	}
 
-	//if (!this->solid_color.Initialize("solid_shader.vert", "solid_shader.frag"))
-	//{
-	//	return false;
-	//}
+
 
 	return true;
 }

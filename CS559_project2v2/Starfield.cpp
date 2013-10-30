@@ -50,13 +50,14 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	////generate points for the stars, and place them in the arrays!
 	for(int i = 0; i < stars; i++)
 	{
-		double radius = (double(rand())/double(RAND_MAX) * depth) + inner_radius;
-		double h_angle = double(rand())/double(RAND_MAX) * M_PI + (M_PI / 2.0);
-		double v_angle = double(rand())/double(RAND_MAX) * M_PI; //need to do this differently for truly random - will be distrib. near poles.
+		double radius = ((double(rand())/double(RAND_MAX)) * depth) + inner_radius;
+		double h_angle = double(rand())/double(RAND_MAX) * M_PI * 2.0;
+		double v_angle = acos(2.0 * (double(rand())/double(RAND_MAX)) - 1.0);	//space is mapped differently on vertical angles - so we have a slightly different
+																				//function to generate the vertical angles!
 		VertexAttributesP vertex = VertexAttributesP(vec3(
-			radius * sin(v_angle) * cos(h_angle),
-			radius * cos(v_angle),
-			radius * sin(v_angle) * sin(h_angle)));
+			radius * cos(h_angle),
+			0.0,
+			radius * sin(h_angle)));
 		this->vertex_list.push_back(vertex);
 		//since we'll just draw these vertices as points, we don't care about connectivity
 		//and just push each index on when we create a vertex
@@ -117,7 +118,7 @@ void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const gl
 	solid_color.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
 	this->GLReturnedError("Starfield::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
-	glPointSize(4.0f);
+	glPointSize(2.0f);
 	glDrawElements(GL_POINTS, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
 	glBindVertexArray(0);
 	glUseProgram(0);
