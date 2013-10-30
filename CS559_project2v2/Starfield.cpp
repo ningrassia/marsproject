@@ -50,18 +50,22 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	////generate points for the stars, and place them in the arrays!
 	for(int i = 0; i < stars; i++)
 	{
-		double radius = ((double(rand())/double(RAND_MAX)) * depth) + inner_radius;
-		double h_angle = double(rand())/double(RAND_MAX) * M_PI * 2.0;
-		double v_angle = acos(2.0 * (double(rand())/double(RAND_MAX)) - 1.0);	//space is mapped differently on vertical angles - so we have a slightly different
-																				//function to generate the vertical angles!
+		float radius = ((double(rand())/double(RAND_MAX)) * depth) + inner_radius;
+		float h_angle = double(rand())/double(RAND_MAX) * M_PI * 2.0;
+		float v_angle = acos((2.0 * double(rand())/double(RAND_MAX)) - 1.0);	//stars will be concentrated at poles.
+		
+		cout << radius << endl;
+		
 		VertexAttributesP vertex = VertexAttributesP(vec3(
-			radius * cos(h_angle),
-			0.0,
-			radius * sin(h_angle)));
+			radius * sin(v_angle) * cos(h_angle),
+			radius * cos(v_angle),
+			radius * sin(v_angle) * sin(h_angle)));
 		this->vertex_list.push_back(vertex);
 		//since we'll just draw these vertices as points, we don't care about connectivity
 		//and just push each index on when we create a vertex
 		this->vertex_indices.push_back(i);
+
+		cout << vertex.position[0] << " " << vertex.position[1] << " " << vertex.position[2] << endl;
 	}
 
 
@@ -77,7 +81,7 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	}
 
 	//set up our layout
-	glVertexAttribPointer(0,3,GL_DOUBLE, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
+	glVertexAttribPointer(0,3,GL_FLOAT, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
 	//activate our vertex stuff
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

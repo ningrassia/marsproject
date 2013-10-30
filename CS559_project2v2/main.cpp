@@ -245,7 +245,7 @@ int main(int argc, char * argv[])
 	}
 	
 	// initialize a starfield - lots of stars!
-	if(!starfield.Initialize(6.0,2.0,10000))
+	if(!starfield.Initialize(10.0,5.0,10000))
 	{
 		return 0;
 	}
