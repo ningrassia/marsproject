@@ -27,7 +27,7 @@ void PlanarMesh::BuildNormalVisualizationGeometry()
 	}
 }
 
-bool PlanarMesh::Initialize(int height, int width)
+bool PlanarMesh::Initialize(int slices, int stacks)
 {
 	// CHECK FOR ERRORS!
 	if(this->GLReturnedError("PlanarMesh::Initialize - on entry")) 
@@ -41,7 +41,7 @@ bool PlanarMesh::Initialize(int height, int width)
 	}
 	
 	// Sanity check - this should never happen
-	if(height <= 1 || width <= 1) 
+	if(stacks <= 1 || slices <= 1) 
 	{
 		return false;
 	}
@@ -63,9 +63,9 @@ bool PlanarMesh::Initialize(int height, int width)
 	const vec3 n = vec3(0.0f, 0.0f, 1.0f);
 
 	// Here we just make the points and push them on our vertex_list
-	for(int h = 0; h < height; h++)
+	for(int h = 0; h < stacks; h++)
 	{
-		for(int w = 0; w < width; w++)
+		for(int w = 0; w < slices; w++)
 		{
 			VertexAttributesPCN vertex;
 			vertex.position = vec3((float)w, (float)h, 0.0f);
@@ -78,13 +78,13 @@ bool PlanarMesh::Initialize(int height, int width)
 	// Here we generate connectivity for the triangles
 	// We don't need to run on the bottom row because of how we generate the connectivity
 	// Fill out the vertex_indices list
-	for(int h = 0; h < (height-1); h++)
+	for(int h = 0; h < (stacks-1); h++)
 	{
-		for(int w = 0; w < width; w++)
+		for(int w = 0; w < slices; w++)
 		{
-			int index = (w + h * width); //each row is offset by "width" vertices.
+			int index = (w + h * slices); //each row is offset by "width" vertices.
 			//Check for left, then generate left-style tri
-			if((index % width) > 0) // If left vertex exists
+			if((index % slices) > 0) // If left vertex exists
 			{
 				// CONNECT LEFT TRIANGLE
 				this->vertex_indices.push_back(index);

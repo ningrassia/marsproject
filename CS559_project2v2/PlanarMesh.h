@@ -15,7 +15,7 @@ public:
 	PlanarMesh();
 	void TakeDown();
 	// TODO:Intialize needs to be virtual? Initialize different for each Shape?
-	bool Initialize(int height, int width); // height will end up as stacks, width will end up as slices
+	bool Initialize(int slices, int stacks); // height will end up as stacks, width will end up as slices
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
 
 	Shader shader;
