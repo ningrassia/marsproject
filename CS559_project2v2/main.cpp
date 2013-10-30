@@ -28,13 +28,20 @@ public:
 	float near_plane, far_plane, fov;
 
 	bool wireframe_enabled;
-	bool starfield_enabled;
+
 	bool paused;
 	float current_time, time_last_pause_began, total_time_paused;
 	float period;
+	float rotate_factor;
+
+	bool starfield_enabled;
+	double starfield_depth;
+	double starfield_inner_radius;
+	int starfield_num_stars;
 
 	float horiz_cam_angle, vert_cam_angle, cam_radius;
-
+	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
+	DisplayModes current_mode;
 	vector<std::string> onscreen_text;
 } globals;
 
@@ -49,15 +56,22 @@ Globals::Globals()
 	this->fov = 50.0f;
 
 	this->wireframe_enabled = false;
-	this->starfield_enabled = true;
+
 	this->paused = false;
 	this->current_time = 0;
 	this->time_last_pause_began = 0;
 	this->total_time_paused = 0;
 	this->period = 1000 / 60;
+	this->rotate_factor = 4.0f;
 
-	this->horiz_cam_angle = 10;
-	this->vert_cam_angle = 10;
+	this->starfield_enabled = true;
+	this->starfield_depth = 5.0;
+	this->starfield_inner_radius = 10.0;
+	this->starfield_num_stars = 5000;
+
+	this->current_mode = Ship;
+	this->horiz_cam_angle = 0;
+	this->vert_cam_angle = 0;
 	this->cam_radius = 5;
 }
 
@@ -107,31 +121,14 @@ void DisplayOnscreenText()
 	}
 }
 
-void DisplayFunc()
+void ShipModeDraw(mat4 proj)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, (globals.wireframe_enabled == true) ? GL_LINE : GL_FILL);
-
-	glViewport(0, 0, globals.window_size.x, globals.window_size.y);
-
-	mat4 proj = perspective(globals.fov, globals.aspect_ratio, globals.near_plane, globals.far_plane);
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(value_ptr(proj));
-
 	mat4 mv(1.0f);
 	//Temporary lookat - always looking at the center point?
 	vec3 eyePos = vec3(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle)),
 						(globals.cam_radius * sin(toRadian(globals.vert_cam_angle))),
 						(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle))));
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(value_ptr(mv));
-
-	
-
-	
 
 	// current_time may not be part of globals
 	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
@@ -146,14 +143,72 @@ void DisplayFunc()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	DisplayOnscreenText();
+	glutSwapBuffers();
+}
 
+void MarsModeDraw(mat4 proj)
+{
 	
+}
 
-	//Blatantly ripping off the structure of OGLTTA
-	//Use an enum to go through the list of possible states
+void StarsModeDraw(mat4 proj)
+{
+	mat4 mv(1.0f);
+	//make sure we're outside of the starfield!
+	vec3 eyePos = vec3(0.0f,0.0f, 2.0f * (globals.starfield_inner_radius + globals.starfield_depth));
+	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
+
+	//rotate based on the time!
+	//divide by rotate_factor to control speed of rotation!
+	mv = rotate(mv,
+		(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
+			/globals.rotate_factor),
+		vec3(0.0f, 1.0f, 0.0f)); 
+
+	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	DisplayOnscreenText();
 	glutSwapBuffers();
+}
+
+void DisplayFunc()
+{
+	//this is all common setup no matter what mode we're in!
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, (globals.wireframe_enabled == true) ? GL_LINE : GL_FILL);
+
+	glViewport(0, 0, globals.window_size.x, globals.window_size.y);
+
+	mat4 proj = perspective(globals.fov, globals.aspect_ratio, globals.near_plane, globals.far_plane);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(value_ptr(proj));
+
+	//select our mode and draw it! Using an enum. Not perfect yet, but yeah.
+	switch(globals.current_mode)
+	{
+		case Globals::DisplayModes::Ship:
+			ShipModeDraw(proj);
+			return;
+		case Globals::DisplayModes::Mars:
+
+			break;
+		case Globals::DisplayModes::FirstPerson:
+
+			break;
+		case Globals::DisplayModes::ThirdPerson:
+
+			break;
+		case Globals::DisplayModes::Stars:
+			StarsModeDraw(proj);
+			break;
+
+	}
+	
 }
 
 void ReshapeFunc(int w, int h)
@@ -200,6 +255,19 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			{
 				globals.total_time_paused += (globals.current_time - globals.time_last_pause_began);
 			}
+			break;
+		case '+':
+			if(globals.rotate_factor > 0.25)
+			{
+				globals.rotate_factor = globals.rotate_factor / 2.0;
+			}
+			break;
+		case '-':
+			if(globals.rotate_factor < 16.0)
+			{
+				globals.rotate_factor = globals.rotate_factor * 2.0;
+			}
+			break;
 	}
 	return;
 }
@@ -221,13 +289,25 @@ void SpecialFunc(int key, int x, int y)
 		if(globals.vert_cam_angle > -89.0f)
 		globals.vert_cam_angle -= 1.0f;
 		break;
+	case GLUT_KEY_F1:
+		//NEED TO DO ENUM STUFF HERE.
+		//right now just switching between ship and stars.
+		if(globals.current_mode == Globals::DisplayModes::Ship)
+		{
+			globals.current_mode = Globals::DisplayModes::Stars;
+		}
+		else
+		{
+			globals.current_mode = Globals::DisplayModes::Ship;
+		}
+		break;
 	}
 }
 
 void TimerFunc(int value)
 {
 
-	//update our 
+	//update our current time.
 	globals.current_time++;
 	glutTimerFunc(globals.period, TimerFunc, 0);
 	//make sure our window is open when we draw again!
@@ -273,7 +353,7 @@ int main(int argc, char * argv[])
 	}
 	
 	// initialize a starfield - lots of stars!
-	if(!starfield.Initialize(10.0,5.0,5000))
+	if(!starfield.Initialize(globals.starfield_inner_radius,globals.starfield_depth,globals.starfield_num_stars))
 	{
 		return 0;
 	}
