@@ -28,6 +28,7 @@ public:
 	float near_plane, far_plane, fov;
 
 	bool wireframe_enabled;
+	bool starfield_enabled;
 	bool paused;
 	float current_time, time_last_pause_began, total_time_paused;
 	float period;
@@ -48,6 +49,7 @@ Globals::Globals()
 	this->fov = 50.0f;
 
 	this->wireframe_enabled = false;
+	this->starfield_enabled = true;
 	this->paused = false;
 	this->current_time = 0;
 	this->time_last_pause_began = 0;
@@ -135,8 +137,10 @@ void DisplayFunc()
 	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
-	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
-
+	if(globals.starfield_enabled)
+	{
+		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	}
 	//draw axes last? don't know why
 	//DrawAxes();
 
@@ -177,8 +181,27 @@ void KeyboardFunc(unsigned char c, int x, int y)
 		case 'x':
 		case 27:
 			CloseFunc();
-			return;
+			break;
+		case 'w':
+			globals.wireframe_enabled = !globals.wireframe_enabled;
+			break;
+		case 's':
+			globals.starfield_enabled = !globals.starfield_enabled;
+			break;
+		case 'p':
+			globals.paused = !globals.paused;
+			//if we've just paused, set the time we just paused at!
+			if(globals.paused)
+			{
+				globals.time_last_pause_began = globals.current_time;
+			}
+			//if we've just unpaused, add to the total time paused.
+			else
+			{
+				globals.total_time_paused += (globals.current_time - globals.time_last_pause_began);
+			}
 	}
+	return;
 }
 
 void SpecialFunc(int key, int x, int y)
@@ -203,10 +226,15 @@ void SpecialFunc(int key, int x, int y)
 
 void TimerFunc(int value)
 {
-	//check to make sure our window is still here before we redisplay?
-	//perhaps?
+
+	//update our 
+	globals.current_time++;
 	glutTimerFunc(globals.period, TimerFunc, 0);
-	glutPostRedisplay();
+	//make sure our window is open when we draw again!
+	if(!globals.window_closed)
+	{
+		glutPostRedisplay();
+	}
 }
 
 int main(int argc, char * argv[])
@@ -245,7 +273,7 @@ int main(int argc, char * argv[])
 	}
 	
 	// initialize a starfield - lots of stars!
-	if(!starfield.Initialize(10.0,5.0,10000))
+	if(!starfield.Initialize(10.0,5.0,5000))
 	{
 		return 0;
 	}

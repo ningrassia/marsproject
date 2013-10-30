@@ -53,8 +53,7 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 		float radius = ((double(rand())/double(RAND_MAX)) * depth) + inner_radius;
 		float h_angle = double(rand())/double(RAND_MAX) * M_PI * 2.0;
 		float v_angle = acos((2.0 * double(rand())/double(RAND_MAX)) - 1.0);	//stars will be concentrated at poles.
-		
-		cout << radius << endl;
+
 		
 		VertexAttributesP vertex = VertexAttributesP(vec3(
 			radius * sin(v_angle) * cos(h_angle),
@@ -65,7 +64,6 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 		//and just push each index on when we create a vertex
 		this->vertex_indices.push_back(i);
 
-		cout << vertex.position[0] << " " << vertex.position[1] << " " << vertex.position[2] << endl;
 	}
 
 
