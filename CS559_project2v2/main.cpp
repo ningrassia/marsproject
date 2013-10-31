@@ -1,5 +1,7 @@
 /* Comment header */
 
+
+//Enum increment taken from http://www.cplusplus.com/forum/beginner/41790/
 #define _USE_MATH_DEFINES
 
 #include <iostream>
@@ -43,7 +45,17 @@ public:
 	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
 	DisplayModes current_mode;
 	vector<std::string> onscreen_text;
+
+
+
 } globals;
+
+inline Globals::DisplayModes& operator++(Globals::DisplayModes& disp_modes, int)  // <--- note -- must be a reference
+{
+   const int i = static_cast<int>(disp_modes);
+   disp_modes = static_cast<Globals::DisplayModes>((i + 1) % 5);
+   return disp_modes;
+}
 
 Globals::Globals() 
 {
@@ -138,18 +150,29 @@ void ShipModeDraw(mat4 proj)
 	{
 		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	}
-	//draw axes last? don't know why
-	//DrawAxes();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	DisplayOnscreenText();
-	glutSwapBuffers();
 }
 
 void MarsModeDraw(mat4 proj)
 {
-	
+	//Just using our mesh, replace the mesh with Mars eventually!
+
+	mat4 mv(1.0f);
+	//Temporary lookat - always looking at the center point?
+	vec3 eyePos = vec3(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle)),
+						(globals.cam_radius * sin(toRadian(globals.vert_cam_angle))),
+						(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle))));
+	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
+
+	// current_time may not be part of globals
+	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+	// also draw a starfield
+	if(globals.starfield_enabled)
+	{
+		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	}
+
 }
 
 void StarsModeDraw(mat4 proj)
@@ -168,10 +191,6 @@ void StarsModeDraw(mat4 proj)
 
 	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	DisplayOnscreenText();
-	glutSwapBuffers();
 }
 
 void DisplayFunc()
@@ -195,7 +214,7 @@ void DisplayFunc()
 			ShipModeDraw(proj);
 			return;
 		case Globals::DisplayModes::Mars:
-
+			MarsModeDraw(proj);
 			break;
 		case Globals::DisplayModes::FirstPerson:
 
@@ -208,6 +227,11 @@ void DisplayFunc()
 			break;
 
 	}
+	//no use repeating code!
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	DisplayOnscreenText();
+	glutSwapBuffers();
 	
 }
 
@@ -290,15 +314,26 @@ void SpecialFunc(int key, int x, int y)
 		globals.vert_cam_angle -= 1.0f;
 		break;
 	case GLUT_KEY_F1:
-		//NEED TO DO ENUM STUFF HERE.
-		//right now just switching between ship and stars.
-		if(globals.current_mode == Globals::DisplayModes::Ship)
+		globals.current_mode++;
+		//update the display text!
+		globals.onscreen_text.pop_back();
+		switch(globals.current_mode)
 		{
-			globals.current_mode = Globals::DisplayModes::Stars;
-		}
-		else
-		{
-			globals.current_mode = Globals::DisplayModes::Ship;
+			case Globals::DisplayModes::Ship:
+				globals.onscreen_text.push_back("Ship Mode");
+				return;
+			case Globals::DisplayModes::Mars:
+				globals.onscreen_text.push_back("Mars Mode");
+				break;
+			case Globals::DisplayModes::FirstPerson:
+				globals.onscreen_text.push_back("First Person Mode");
+				break;
+			case Globals::DisplayModes::ThirdPerson:
+				globals.onscreen_text.push_back("Third Person Mode");
+				break;
+			case Globals::DisplayModes::Stars:
+				globals.onscreen_text.push_back("Starfield Mode");
+				break;
 		}
 		break;
 	}
