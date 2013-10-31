@@ -143,8 +143,11 @@ bool Mesh::Initialize()
 	}
 
 
-
+	#ifdef _DEBUG
+	if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
+	#else
 	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
+	#endif
 	{
 		return false;
 	}

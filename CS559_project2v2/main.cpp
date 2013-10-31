@@ -13,7 +13,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <math.h>
 
-#include "Mesh.h"
 #include "Starfield.h"
 #include "Sphere.h"
 
@@ -145,9 +144,7 @@ void ShipModeDraw(mat4 proj)
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 
 	// current_time may not be part of globals
-	//mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
-	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
-
+	
 	// also draw a starfield
 	if(globals.starfield_enabled)
 	{
@@ -168,7 +165,10 @@ void MarsModeDraw(mat4 proj)
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 
 	// current_time may not be part of globals
-	// mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	mv = translate(mv, vec3(-2.0f, 0.0f, 5.0f)); // temp
+	glLoadMatrixf(value_ptr(mv)); // temp
+
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
@@ -250,7 +250,6 @@ void ReshapeFunc(int w, int h)
 void CloseFunc()
 {
 	globals.window_closed = true;
-	//mesh.TakeDown();
 	starfield.TakeDown();
 	sphere.TakeDown();
 	glutLeaveMainLoop();
@@ -385,13 +384,7 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	// initialize our Mesh
-	//if(!mesh.Initialize())
-	//{
-	//	return 0;
-	//}
-
-	if(!sphere.Initialize(5, 20, 20))
+	if(!sphere.Initialize(1, 20, 20))
 	{
 		return false;
 	}
