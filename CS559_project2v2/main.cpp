@@ -13,8 +13,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <math.h>
 
-#include "PlanarMesh.h"
+#include "Mesh.h"
 #include "Starfield.h"
+#include "Sphere.h"
 
 using namespace std;
 using namespace glm;
@@ -87,8 +88,9 @@ Globals::Globals()
 	this->cam_radius = 5;
 }
 
-PlanarMesh mesh;
+//Mesh mesh;
 Starfield starfield;
+Sphere sphere;
 
 // Utility function for conversion from degree to radians
 float toRadian(float d)
@@ -143,7 +145,8 @@ void ShipModeDraw(mat4 proj)
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 
 	// current_time may not be part of globals
-	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	//mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
@@ -165,7 +168,7 @@ void MarsModeDraw(mat4 proj)
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 
 	// current_time may not be part of globals
-	mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	// mesh.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
@@ -247,8 +250,9 @@ void ReshapeFunc(int w, int h)
 void CloseFunc()
 {
 	globals.window_closed = true;
-	mesh.TakeDown();
+	//mesh.TakeDown();
 	starfield.TakeDown();
+	sphere.TakeDown();
 	glutLeaveMainLoop();
 }
 
@@ -381,10 +385,15 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	// initialize our PlanarMesh
-	if(!mesh.Initialize(4,4))
+	// initialize our Mesh
+	//if(!mesh.Initialize())
+	//{
+	//	return 0;
+	//}
+
+	if(!sphere.Initialize(5, 20, 20))
 	{
-		return 0;
+		return false;
 	}
 	
 	// initialize a starfield - lots of stars!
