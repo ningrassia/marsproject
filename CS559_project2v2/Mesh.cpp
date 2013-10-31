@@ -1,22 +1,22 @@
 //Based on "Top.cpp" in Perry Kovolovitz's Modern GL Example
-#include "PlanarMesh.h"
+#include "Mesh.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace glm;
 
-PlanarMesh::PlanarMesh()
+Mesh::Mesh()
 {
 	// TODO:Color stuff later
 }
 
-PlanarMesh::~PlanarMesh()
+Mesh::~Mesh()
 {
 }
 
 // Sets up the list of normals
-void PlanarMesh::BuildNormalVisualizationGeometry()
+void Mesh::BuildNormalVisualizationGeometry()
 {
 	const float normal_scalar = 0.125f;
 	for (int j = 1; j <= 3; ++j)
@@ -31,10 +31,10 @@ void PlanarMesh::BuildNormalVisualizationGeometry()
 	}
 }
 
-bool PlanarMesh::Initialize(int slices, int stacks)
+bool Mesh::BuildMesh(int slices, int stacks, vec3 color)
 {
 	// CHECK FOR ERRORS!
-	if(this->GLReturnedError("PlanarMesh::Initialize - on entry")) 
+	if(this->GLReturnedError("Mesh::Initialize - on entry")) 
 	{
 		return false;
 	}
@@ -74,7 +74,7 @@ bool PlanarMesh::Initialize(int slices, int stacks)
 			VertexAttributesPCN vertex;
 			vertex.position = vec3((float)w, (float)h, 0.0f);
 			vertex.normal = n;
-			vertex.color = vec3(1.0f, 0.0f, 0.0f); // TEMPORARY COLOR!
+			vertex.color = color; // TEMPORARY COLOR!
 			this->vertex_list.push_back(vertex);
 		}
 	}
@@ -110,14 +110,17 @@ bool PlanarMesh::Initialize(int slices, int stacks)
 			}
 		}
 	}
+}
 
+bool Mesh::Initialize()
+{
 	// Phong shader for mesh
 	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCN), &this->vertex_list[0]))
 	{
 		return false;
 	}
 
-	if(this->GLReturnedError("PlanarMesh::Initialize - after PostGLInit"))
+	if(this->GLReturnedError("Mesh::Initialize - after PostGLInit"))
 	{
 		return false;
 	}
@@ -134,38 +137,43 @@ bool PlanarMesh::Initialize(int slices, int stacks)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	if(this->GLReturnedError("PlanarMesh::Initialize - after attribute poniter"))
+	if(this->GLReturnedError("Mesh::Initialize - after attribute poniter"))
 	{
 		return false;
 	}
 
 
-
+	#ifdef _DEBUG
+	if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
+	#else
 	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
+	#endif
 	{
 		return false;
 	}
 
-	if(this->GLReturnedError("PlanarMesh::Initialize - after shader Init"))
+	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
 		return false;
 	}
-
-
 
 	return true;
 }
 
-void PlanarMesh::TakeDown()
+void Mesh::BuildShape()
+{
+}
+
+void Mesh::TakeDown()
 {
 	this->vertex_list.clear();	// TODO: Check for memory leaks!!
 	this->shader.TakeDown();
 	super::TakeDown();
 }
 
-void PlanarMesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
+void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
 {
-	if(this->GLReturnedError("PlanarMesh::Draw - on entry"))
+	if(this->GLReturnedError("Mesh::Draw - on entry"))
 	{
 		return;
 	}
@@ -176,9 +184,9 @@ void PlanarMesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const g
 	mat3 nm = inverse(transpose(mat3(modelview)));
 	
 	shader.Use();
-	this->GLReturnedError("PlanarMesh::Draw - after use");
+	this->GLReturnedError("Mesh::Draw - after use");
 	shader.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
-	this->GLReturnedError("PlanarMesh::Draw - after common setup");
+	this->GLReturnedError("Mesh::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
 	glDrawElements(GL_TRIANGLES, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
 	glBindVertexArray(0);

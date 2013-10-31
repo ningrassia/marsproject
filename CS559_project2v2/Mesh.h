@@ -10,18 +10,19 @@
 #include "Shader.h"
 
 // TODO: Change class name to Mesh?
-class PlanarMesh: public Object
+class Mesh: public Object
 {
 public:
-	PlanarMesh();
+	Mesh();
 	void TakeDown();
-	// TODO:Intialize needs to be virtual? Initialize different for each Shape?
-	bool Initialize(int slices, int stacks); // height will end up as stacks, width will end up as slices
+	bool BuildMesh(int slices, int stacks, vec3 color); // height will end up as stacks, width will end up as slices
+	bool Initialize();
+	virtual void BuildShape();
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
 
 	Shader shader;
 	Shader solid_color;
-	~PlanarMesh();
+	~Mesh();
 protected:
 	std::vector<VertexAttributesPCN> vertex_list;
 private:
