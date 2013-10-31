@@ -9,6 +9,7 @@
 #include "Object.h"
 #include "Shader.h"
 
+// TODO: Change class name to Mesh?
 class PlanarMesh: public Object
 {
 public:
@@ -20,9 +21,11 @@ public:
 
 	Shader shader;
 	Shader solid_color;
+	~PlanarMesh();
+protected:
+	std::vector<VertexAttributesPCN> vertex_list;
 private:
 	void BuildNormalVisualizationGeometry();
-	std::vector<VertexAttributesPCN> vertex_list;
 	typedef Object super;
 
 };

@@ -6,9 +6,13 @@
 using namespace std;
 using namespace glm;
 
-PlanarMesh::PlanarMesh(void)
+PlanarMesh::PlanarMesh()
 {
 	// TODO:Color stuff later
+}
+
+PlanarMesh::~PlanarMesh()
+{
 }
 
 // Sets up the list of normals
@@ -88,19 +92,19 @@ bool PlanarMesh::Initialize(int slices, int stacks)
 			{
 				// CONNECT LEFT TRIANGLE
 				this->vertex_indices.push_back(index);
-				this->vertex_indices.push_back(index + width);
-				this->vertex_indices.push_back(index + (width - 1));
+				this->vertex_indices.push_back(index + slices);
+				this->vertex_indices.push_back(index + (slices - 1));
 
 				//this->BuildNormalVisualizationGeometry();
 			}
 
 			//Check for right, then generate right-style tri
-			if((index % width) < (width - 1))	// If right vertex exists
+			if((index % slices) < (slices - 1))	// If right vertex exists
 			{
 				// CONNECT RIGHT TRIANGLE
 				this->vertex_indices.push_back(index);
 				this->vertex_indices.push_back(index + 1);
-				this->vertex_indices.push_back(index + width);
+				this->vertex_indices.push_back(index + slices);
 
 				//this->BuildNormalVisualizationGeometry();
 			}
