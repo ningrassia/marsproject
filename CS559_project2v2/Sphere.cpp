@@ -50,6 +50,11 @@ bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 	return true;
 }
 
+void Sphere::CalculateNormals()
+{
+
+}
+
 void Sphere::BuildShape(float radius, int slices, int stacks)
 {
 	// Loop through EACH INDEX.
@@ -60,7 +65,7 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 
 		//right now we're not adding the fan at top/bottom so may cause problems for texturing?
 		float v_angle = -(float(M_PI) / 2.0f) + (float(curr_stack) * (float(M_PI) / float(stacks-1)));
-		float h_angle = (2.0f * float(M_PI) * (float(curr_slice) / float(slices)));
+		float h_angle = (2.0f * float(M_PI) * (float(curr_slice) / float(slices - 1)));
 
 		this->vertex_list[i].position.x = radius * cos(v_angle) * sin(h_angle);
 		this->vertex_list[i].position.y = radius * sin(v_angle);
@@ -73,7 +78,7 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 		
 		// Add more points to vertex_indices for connectivity between the two sides after wrapping
 		// Check if on far right edge - then connect with left edge
-		if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
+		/*if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
 		{
 			this->vertex_indices.push_back(i);
 			this->vertex_indices.push_back(i - slices + 1);
@@ -84,7 +89,7 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 			this->vertex_indices.push_back(i + 1);
 			this->vertex_indices.push_back(i + slices);
 			super::BuildNormalVisualizationGeometry();
-		}
+		}*/
 	}
 }
 
