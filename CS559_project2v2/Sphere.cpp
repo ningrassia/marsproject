@@ -43,9 +43,31 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 		int curr_slice = i % slices;
 		int curr_stack = i / slices;
 
-		this->vertex_list[i].position.x = radius * (sin(M_PI * (curr_stack / float(stacks))) * cos(2.0 * M_PI * (curr_slice / float(slices))));
-		this->vertex_list[i].position.y = radius * (cos(M_PI * (curr_stack / stacks)));
-		this->vertex_list[i].position.z = radius * (sin(M_PI * (curr_stack / stacks)) * sin(2.0 * M_PI * (curr_slice / slices)));
+		//right now we're not adding the fan at top/bottom so may cause problems for texturing?
+		float v_angle = -(float(M_PI) / 2.0f) + (float(curr_stack) * (float(M_PI) / float(stacks-1)));
+		float h_angle = (2.0f * float(M_PI) * (float(curr_slice) / float(slices)));
+
+		this->vertex_list[i].position.x = radius * cos(v_angle) * sin(h_angle);
+		this->vertex_list[i].position.y = radius * sin(v_angle);
+		this->vertex_list[i].position.z = radius * cos(v_angle) * cos(h_angle);
+		
+		// Update normals
+		this->vertex_list[i].normal.x = cos(v_angle) * sin(h_angle);
+		this->vertex_list[i].normal.y = sin(v_angle);
+		this->vertex_list[i].normal.z = cos(v_angle) * cos(h_angle);
+		
+		// Add more points to vertex_indices for connectivity between the two sides after wrapping
+		// Check if on far right edge - then connect with left edge
+		if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
+		{
+			this->vertex_indices.push_back(i);
+			this->vertex_indices.push_back(i - slices + 1);
+			this->vertex_indices.push_back(i + slices);
+
+			this->vertex_indices.push_back(i - slices + 1);
+			this->vertex_indices.push_back(i + 1);
+			this->vertex_indices.push_back(i + slices);
+		}
 	}
 }
 
