@@ -31,6 +31,7 @@ public:
 	float near_plane, far_plane, fov;
 
 	bool wireframe_enabled;
+	bool normals_enabled;
 
 	bool paused;
 	float current_time, time_last_pause_began, total_time_paused;
@@ -69,6 +70,7 @@ Globals::Globals()
 	this->fov = 50.0f;
 
 	this->wireframe_enabled = false;
+	this->normals_enabled = false;
 
 	this->paused = false;
 	this->current_time = 0;
@@ -334,6 +336,7 @@ void CloseFunc()
 {
 	globals.window_closed = true;
 	starfield.TakeDown();
+	cylinder.TakeDown();
 	sphere.TakeDown();
 	glutLeaveMainLoop();
 }
@@ -345,6 +348,11 @@ void KeyboardFunc(unsigned char c, int x, int y)
 		case 'x':
 		case 27:
 			CloseFunc();
+			break;
+		case 'n':
+			globals.normals_enabled = !globals.normals_enabled;
+			cylinder.EnableNormals(globals.normals_enabled);
+			sphere.EnableNormals(globals.normals_enabled);
 			break;
 		case 'w':
 			globals.wireframe_enabled = !globals.wireframe_enabled;
@@ -458,7 +466,9 @@ int main(int argc, char * argv[])
 	glutSpecialFunc(SpecialFunc);
 
 	// Add onscreen text to string vector - we always start in ship mode!
+	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
 	globals.onscreen_text.push_back("Esc to close");
+	globals.onscreen_text.push_back("w to toggle wireframe - n to noggle normals");
 	globals.onscreen_text.push_back("Ship Mode");
 
 	if (glewInit() != GLEW_OK)
@@ -467,7 +477,7 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	if(!sphere.Initialize(1, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
+	if(!sphere.Initialize(2, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
 	{
 		return false;
 	}

@@ -64,7 +64,7 @@ void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 	// Here we just make the points and push them on our vertex_list
 	for(int h = 0; h < stacks; h++)
 	{
-		for(int w = 0; w < slices; w++)
+		for(int w = 0; w < slices; w++) 
 		{
 			VertexAttributesPCN vertex;
 			vertex.position = vec3((float)w, (float)h, 0.0f);
@@ -90,7 +90,7 @@ void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 				this->vertex_indices.push_back(index + slices);
 				this->vertex_indices.push_back(index + (slices - 1));
 
-				//this->BuildNormalVisualizationGeometry();
+				Mesh::BuildNormalVisualizationGeometry();
 			}
 
 			//Check for right, then generate right-style tri
@@ -101,7 +101,7 @@ void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 				this->vertex_indices.push_back(index + 1);
 				this->vertex_indices.push_back(index + slices);
 
-				//this->BuildNormalVisualizationGeometry();
+				Mesh::BuildNormalVisualizationGeometry();
 			}
 		}
 	}
@@ -143,6 +143,17 @@ bool Mesh::Initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	if (this->normal_vertices.size() > 0)
+	{
+		if (!this->PostGLInitialize(&this->normal_array_handle, &this->normal_coordinate_handle, this->normal_vertices.size() * sizeof(VertexAttributesP), &this->normal_vertices[0]))
+			return false;
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesP), (GLvoid *) 0);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+
 	if(this->GLReturnedError("Mesh::Initialize - after attribute poniter"))
 	{
 		return false;
@@ -157,6 +168,9 @@ bool Mesh::Initialize()
 	{
 		return false;
 	}
+
+	if (!this->solid_color.Initialize("solid_shader.vert", "solid_shader.frag"))
+		return false;
 
 	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
@@ -197,4 +211,19 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 	glDrawElements(GL_TRIANGLES, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
 	glBindVertexArray(0);
 	glUseProgram(0);
+
+	if (this->draw_normals)
+	{
+		this->solid_color.Use();
+		this->solid_color.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
+		glBindVertexArray(this->normal_array_handle);
+		glDrawElements(GL_LINES , this->normal_indices.size(), GL_UNSIGNED_INT , &this->normal_indices[0]);
+		glBindVertexArray(0);
+		glUseProgram(0);
+	}
+
+	if (this->GLReturnedError("Top::Draw - on exit"))
+	{
+		return;
+	}	
 }

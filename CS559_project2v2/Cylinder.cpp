@@ -10,6 +10,19 @@ Cylinder::Cylinder()
 {
 }
 
+void Cylinder::BuildNormalVisualizationGeometry()
+{
+	const float normal_scalar = 0.125f;
+	int vertex_index = 0;
+	for(int i = 0; i < normal_vertices.size(); i++)
+	{
+		this->normal_vertices[i] = this->vertex_list[this->vertex_indices[vertex_index]].position;
+		i++;
+		this->normal_vertices[i] = this->vertex_list[this->vertex_indices[vertex_index]].position + this->vertex_list[vertex_indices[vertex_index]].normal * normal_scalar;
+		vertex_index++;
+	}
+}
+
 bool Cylinder::Initialize(float radius, float height, int slices, int stacks, vec3 color) 
 {
 	// Initialize a flat mesh - Mesh::Inizialize(slices, stacks + 2)
@@ -21,10 +34,12 @@ bool Cylinder::Initialize(float radius, float height, int slices, int stacks, ve
 
 	BuildMesh(slices, stacks, color);
 	BuildShape(radius, height, slices, stacks);
+	this->BuildNormalVisualizationGeometry();
 	if(!super::Initialize())
 	{
 		return false;
 	}
+	
 
 	return true;
 
@@ -57,10 +72,12 @@ void Cylinder::BuildShape(float radius, float height, int slices, int stacks)
 			this->vertex_indices.push_back(i);
 			this->vertex_indices.push_back(i - slices + 1);
 			this->vertex_indices.push_back(i + slices);
+			super::BuildNormalVisualizationGeometry();
 
 			this->vertex_indices.push_back(i - slices + 1);
 			this->vertex_indices.push_back(i + 1);
 			this->vertex_indices.push_back(i + slices);
+			super::BuildNormalVisualizationGeometry();
 		}
 	}
 

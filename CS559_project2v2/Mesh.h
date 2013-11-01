@@ -16,16 +16,16 @@ public:
 	void TakeDown();
 	void BuildMesh(int slices, int stacks, glm::vec3 color); // height will end up as stacks, width will end up as slices
 	bool Initialize();
-	virtual void BuildShape();
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
 
 	Shader shader;
 	Shader solid_color;
 	~Mesh();
 protected:
+	virtual void BuildShape();
+	virtual void BuildNormalVisualizationGeometry();
 	std::vector<VertexAttributesPCN> vertex_list;
 private:
-	void BuildNormalVisualizationGeometry();
 	typedef Object super;
 
 };
