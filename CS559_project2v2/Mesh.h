@@ -9,13 +9,12 @@
 #include "Object.h"
 #include "Shader.h"
 
-// TODO: Change class name to Mesh?
 class Mesh: public Object
 {
 public:
 	Mesh();
 	void TakeDown();
-	bool BuildMesh(int slices, int stacks); // height will end up as stacks, width will end up as slices
+	void BuildMesh(int slices, int stacks, glm::vec3 color); // height will end up as stacks, width will end up as slices
 	bool Initialize();
 	virtual void BuildShape();
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);

@@ -1,4 +1,7 @@
+#define _USE_MATH_DEFINES
+
 #include "Cylinder.h"
+#include <cmath>
 
 using namespace std;
 using namespace glm;
@@ -23,6 +26,8 @@ bool Cylinder::Initialize(float radius, float height, int slices, int stacks, ve
 		return false;
 	}
 
+	return true;
+
 }
 
 void Cylinder::BuildShape(float radius, float height, int slices, int stacks)
@@ -35,16 +40,31 @@ void Cylinder::BuildShape(float radius, float height, int slices, int stacks)
 		int curr_slice = i % slices;
 		int curr_stack = i / slices;
 
-		this->vertex_list[i].position.x = 0;
+		this->vertex_list[i].position.x = float(radius * sin(2.0 * M_PI * ((float)curr_slice/(float)slices)));
 		this->vertex_list[i].position.y = curr_stack * (height / (float)stacks);
-		this->vertex_list[i].position.z = radius;
+		this->vertex_list[i].position.z = float(radius * cos(2.0 * M_PI * ((float)curr_slice/(float)slices)));
+		
+		// Update normals.
+		
+		this->vertex_list[i].normal.x = float(sin(2.0 * M_PI * ((float)curr_slice/(float)slices)));
+		this->vertex_list[i].normal.y = 0.0f;
+		this->vertex_list[i].normal.z = float(cos(2.0 * M_PI * ((float)curr_slice/(float)slices)));
+		
+		// Add more points to vertex_indices for connectivity between the two sides after wrapping
+		// Check if on far right edge - then connect with left edge
+		if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
+		{
+			this->vertex_indices.push_back(i);
+			this->vertex_indices.push_back(i - slices + 1);
+			this->vertex_indices.push_back(i + slices);
 
-		// Multiply the position by the modelview matrix to apply it to the current mv position
-		this->vertex_list[i].position = vec3(vec4(this->vertex_list[i].position, 1) * mv);
-
-		mv = rotate(mv, -float(360.0f / slices), vec3(0.0f, 1.0f, 0.0f));
-		glLoadMatrixf(value_ptr(mv));
+			this->vertex_indices.push_back(i - slices + 1);
+			this->vertex_indices.push_back(i + 1);
+			this->vertex_indices.push_back(i + slices);
+		}
 	}
+
+	
 }
 
 Cylinder::~Cylinder()

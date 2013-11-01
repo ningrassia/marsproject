@@ -15,6 +15,7 @@
 
 #include "Starfield.h"
 #include "Sphere.h"
+#include "Cylinder.h"
 
 using namespace std;
 using namespace glm;
@@ -87,9 +88,9 @@ Globals::Globals()
 	this->cam_radius = 5;
 }
 
-//Mesh mesh;
 Starfield starfield;
 Sphere sphere;
+Cylinder cylinder;
 
 // Utility function for conversion from degree to radians
 float toRadian(float d)
@@ -151,6 +152,17 @@ void ShipModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	}
 
+	//rotate ONLY the ship!
+	mv = translate(mv, vec3(0.0f, 0.0f, 5.0f));
+	mv = rotate(mv,
+				(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
+				/globals.rotate_factor),
+				vec3(0.0f, 1.0f, 0.0f)); 
+	//Replace this with the ship later!
+	cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+
+
 }
 
 void MarsModeDraw(mat4 proj)
@@ -164,11 +176,6 @@ void MarsModeDraw(mat4 proj)
 						(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle))));
 	mv = lookAt(eyePos, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
 
-	// current_time may not be part of globals
-	mv = translate(mv, vec3(-2.0f, 0.0f, 5.0f)); // temp
-	glLoadMatrixf(value_ptr(mv)); // temp
-
-	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
@@ -176,10 +183,55 @@ void MarsModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	}
 
+	//rotate ONLY mars!
+	mv = rotate(mv,
+				(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
+				/globals.rotate_factor),
+				vec3(0.0f, 1.0f, 0.0f)); 
+
+	// current_time may not be part of globals
+	mv = translate(mv, vec3(0.0f, 0.0f, 5.0f)); // temp
+
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+
+}
+
+void FirstPersonModeDraw(mat4 proj)
+{
+	//Just using our mesh, replace the mesh with Mars eventually!
+
+	//not working at the moment!
+
+	mat4 mv(1.0f);
+	//set up our position, view, and up vectors!
+	//REPLACE 4.0f with MARS MAX RADIUS!
+	vec3 eyePos = vec3(0.0f, 0.0f, 2.0f);
+	vec3 lookVec = eyePos - vec3(1.0f, 0.0f, 0.0f);
+	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
+	mv = lookAt(eyePos, lookVec, upVec);
+
+	//rotate based on time!
+	mv = rotate(mv,
+		(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
+			/globals.rotate_factor),
+		vec3(0.0f, 1.0f, 0.0f)); 
+
+	//rotate for our up/down look!
+	mv = rotate(mv,globals.horiz_cam_angle, vec3(0.0f, 1.0f, 0.0f));
+	
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+
+	// also draw a starfield
+	if(globals.starfield_enabled)
+	{
+		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	}
 }
 
 void StarsModeDraw(mat4 proj)
 {
+
 	mat4 mv(1.0f);
 	//make sure we're outside of the starfield!
 	vec3 eyePos = vec3(0.0f,0.0f, 2.0f * (globals.starfield_inner_radius + globals.starfield_depth));
@@ -215,18 +267,21 @@ void DisplayFunc()
 	{
 		case Globals::DisplayModes::Ship:
 			ShipModeDraw(proj);
-			return;
+			break;
 		case Globals::DisplayModes::Mars:
 			MarsModeDraw(proj);
 			break;
 		case Globals::DisplayModes::FirstPerson:
-
+			FirstPersonModeDraw(proj);
 			break;
 		case Globals::DisplayModes::ThirdPerson:
 
 			break;
 		case Globals::DisplayModes::Stars:
 			StarsModeDraw(proj);
+			break;
+		default:
+			ShipModeDraw(proj);
 			break;
 
 	}
@@ -257,8 +312,7 @@ void CloseFunc()
 
 void KeyboardFunc(unsigned char c, int x, int y)
 {
-	globals.current_time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
-
+	
 	switch(c) {
 		case 'x':
 		case 27:
@@ -375,8 +429,9 @@ int main(int argc, char * argv[])
 	glutKeyboardFunc(KeyboardFunc);
 	glutSpecialFunc(SpecialFunc);
 
-	// Add onscreen text to string vector
+	// Add onscreen text to string vector - we always start in ship mode!
 	globals.onscreen_text.push_back("Esc to close");
+	globals.onscreen_text.push_back("Ship Mode");
 
 	if (glewInit() != GLEW_OK)
 	{
@@ -384,11 +439,16 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	if(!sphere.Initialize(1, 20, 20))
+	if(!sphere.Initialize(1, 20, 20, vec3(1.0f, 0.0f, 0.0f)))
 	{
 		return false;
 	}
 	
+	if(!cylinder.Initialize(1, 3, 20, 20, vec3(1.0f, 0.0f, 0.0f)))
+	{
+		return false;
+	}
+
 	// initialize a starfield - lots of stars!
 	if(!starfield.Initialize(globals.starfield_inner_radius,globals.starfield_depth,globals.starfield_num_stars))
 	{

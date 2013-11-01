@@ -31,23 +31,18 @@ void Mesh::BuildNormalVisualizationGeometry()
 	}
 }
 
-bool Mesh::BuildMesh(int slices, int stacks)
+void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 {
-	// CHECK FOR ERRORS!
-	if(this->GLReturnedError("Mesh::Initialize - on entry")) 
+
+	// Sanity check - this should never happen
+	if(stacks <= 1) 
 	{
-		return false;
+		stacks = 2;
 	}
 
-	if(!super::Initialize())
+	if(slices <= 1)
 	{
-		return false;
-	}
-	
-	// Sanity check - this should never happen
-	if(stacks <= 1 || slices <= 1) 
-	{
-		return false;
+		slices = 2;
 	}
 
 	/*
@@ -74,7 +69,7 @@ bool Mesh::BuildMesh(int slices, int stacks)
 			VertexAttributesPCN vertex;
 			vertex.position = vec3((float)w, (float)h, 0.0f);
 			vertex.normal = n;
-			vertex.color = vec3(1.0f, 0.0f, 0.0f); // TEMPORARY COLOR!
+			vertex.color = color; 
 			this->vertex_list.push_back(vertex);
 		}
 	}
@@ -114,6 +109,17 @@ bool Mesh::BuildMesh(int slices, int stacks)
 
 bool Mesh::Initialize()
 {
+	// CHECK FOR ERRORS!
+	if(this->GLReturnedError("Mesh::Initialize - on entry")) 
+	{
+		return false;
+	}
+
+	if(!super::Initialize())
+	{
+		return false;
+	}
+
 	// Phong shader for mesh
 	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCN), &this->vertex_list[0]))
 	{
