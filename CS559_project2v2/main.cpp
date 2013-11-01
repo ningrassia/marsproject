@@ -16,6 +16,7 @@
 #include "Starfield.h"
 #include "Sphere.h"
 #include "Cylinder.h"
+#include "Spaceship.h"
 
 using namespace std;
 using namespace glm;
@@ -38,6 +39,7 @@ public:
 	float period;
 	float rotate_factor;
 
+	int polygon_detail;
 	bool starfield_enabled;
 	double starfield_depth;
 	double starfield_inner_radius;
@@ -79,20 +81,22 @@ Globals::Globals()
 	this->period = 1000 / 60;
 	this->rotate_factor = 4.0f;
 
+	this->polygon_detail = 40;
 	this->starfield_enabled = true;
-	this->starfield_depth = 5.0;
-	this->starfield_inner_radius = 10.0;
+	this->starfield_depth = 10.0;
+	this->starfield_inner_radius = 25.0;
 	this->starfield_num_stars = 5000;
 
 	this->current_mode = Ship;
 	this->horiz_cam_angle = 0;
 	this->vert_cam_angle = 0;
-	this->cam_radius = 5;
+	this->cam_radius = 15;
 }
 
 Starfield starfield;
 Sphere sphere;
 Cylinder cylinder;
+Spaceship spaceship;
 
 // Utility function for conversion from degree to radians
 float toRadian(float d)
@@ -160,7 +164,8 @@ void ShipModeDraw(mat4 proj)
 				/globals.rotate_factor),
 				vec3(0.0f, 1.0f, 0.0f)); 
 	//Replace this with the ship later!
-	cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	//cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	spaceship.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 
 
@@ -338,6 +343,7 @@ void CloseFunc()
 	starfield.TakeDown();
 	cylinder.TakeDown();
 	sphere.TakeDown();
+	spaceship.TakeDown();
 	glutLeaveMainLoop();
 }
 
@@ -353,6 +359,7 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			globals.normals_enabled = !globals.normals_enabled;
 			cylinder.EnableNormals(globals.normals_enabled);
 			sphere.EnableNormals(globals.normals_enabled);
+			spaceship.EnableNormals(globals.normals_enabled);
 			break;
 		case 'w':
 			globals.wireframe_enabled = !globals.wireframe_enabled;
@@ -384,6 +391,22 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			{
 				globals.rotate_factor = globals.rotate_factor * 2.0;
 			}
+			break;
+		case '[':
+			if(globals.polygon_detail > 4) 
+			{
+				globals.polygon_detail--;
+			}
+			spaceship.TakeDown();
+			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
+			break;
+		case ']':
+			if(globals.polygon_detail< 200) 
+			{
+				globals.polygon_detail++;
+			}
+			spaceship.TakeDown();
+			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
 			break;
 	}
 	return;
@@ -483,6 +506,11 @@ int main(int argc, char * argv[])
 	}
 	
 	if(!cylinder.Initialize(1, 3, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
+	{
+		return false;
+	}
+
+	if(!spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f)))
 	{
 		return false;
 	}
