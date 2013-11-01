@@ -188,8 +188,7 @@ void MarsModeDraw(mat4 proj)
 				/globals.rotate_factor),
 				vec3(0.0f, 1.0f, 0.0f)); 
 
-	// current_time may not be part of globals
-	mv = translate(mv, vec3(0.0f, 0.0f, 5.0f)); // temp
+
 
 	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
@@ -220,14 +219,14 @@ void FirstPersonModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	}
 	//REPLACE ME WITH MARS!
-	cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 
 }
 
 void ThirdPersonModeDraw(mat4 proj)
 {
-		mat4 mv(1.0f);
+	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
 	//REPLACE 2.0f with MARS MAX RADIUS
 	vec3 eyePos = vec3(-2.0f, 0.0f, 1.0f);
@@ -247,7 +246,7 @@ void ThirdPersonModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	}
 	//REPLACE ME WITH MARS!
-	cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 	//reset our matrix to draw the ship!
 	//translate/scale values are guesses right now.
