@@ -37,8 +37,8 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 
 	BuildMesh(slices, stacks, color);
 	BuildShape(mars_radius, slices, stacks);
-	super::CalcNormals(slices, stacks);
-	super::BuildNormalVisualizationGeometry();
+	CalcNormals(slices, stacks);
+	BuildNormalVisualizationGeometry();
 	if(!Mesh::Initialize())
 	{
 		return false;
@@ -58,9 +58,17 @@ void Mars::BuildShape(vector<float> mars_radius, int slices, int stacks)
 		float v_angle = -(float(M_PI) / 2.0f) + (float(curr_stack) * ((float(M_PI) / float(stacks - 1))));
 		float h_angle = (2.0f * float(M_PI) * (float(curr_slice) / float(slices - 1)));
 
-		this->vertex_list[i].position.x = mars_radius[i] * cos(v_angle) * sin(h_angle);
-		this->vertex_list[i].position.y = mars_radius[i] * sin(v_angle);
-		this->vertex_list[i].position.z = mars_radius[i] * cos(v_angle) * cos(h_angle);
+		// Need to map LAST vertex in slice to first one - for wrap around
+		if(curr_slice == slices - 1)
+		{
+			this->vertex_list[i].position = this->vertex_list[i - slices + 1].position;
+		}
+		else
+		{
+			this->vertex_list[i].position.x = mars_radius[i] * cos(v_angle) * sin(h_angle);
+			this->vertex_list[i].position.y = mars_radius[i] * sin(v_angle);
+			this->vertex_list[i].position.z = mars_radius[i] * cos(v_angle) * cos(h_angle);
+		}
 	}
 }
 
