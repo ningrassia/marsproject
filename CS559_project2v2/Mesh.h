@@ -24,7 +24,7 @@ public:
 protected:
 	virtual void BuildShape();
 	virtual void BuildNormalVisualizationGeometry();
-	glm::vec3 CrossAndNormalize(int index, int vertex_position1, int vertex_position2);
+	glm::vec3 CrossProduct(int index, int vertex_position1, int vertex_position2);
 	virtual void CalcNormals(int slices, int stacks);
 	std::vector<VertexAttributesPCN> vertex_list;
 private:

@@ -12,6 +12,8 @@ Cylinder::Cylinder()
 
 void Cylinder::BuildNormalVisualizationGeometry()
 {
+	cout << "BUILDING NORMALS FOR CYLINDER" << endl;
+
 	const float normal_scalar = 0.125f;
 	int vertex_index = 0;
 	for(int i = 0; i < normal_vertices.size(); i++)
@@ -23,7 +25,8 @@ void Cylinder::BuildNormalVisualizationGeometry()
 	}
 }
 
-bool Cylinder::Initialize(float radius, float height, int slices, int stacks, vec3 color) 
+
+bool Cylinder::Initialize(float base_radius, float top_radius, float height, int slices, int stacks, vec3 color) 
 {
 	// Initialize a flat mesh - Mesh::Inizialize(slices, stacks + 2)
 	//  - stacks + 2 because we need an extra stack on top and bottom to form the flat bits of the cylinder
@@ -33,7 +36,7 @@ bool Cylinder::Initialize(float radius, float height, int slices, int stacks, ve
 	// Make sure everything is centered around the origin or it'll be hard to manage
 
 	BuildMesh(slices, stacks, color);
-	BuildShape(radius, height, slices, stacks);
+	BuildShape(base_radius, top_radius, height, slices, stacks);
 	this->CalcNormals(slices, stacks);
 	this->BuildNormalVisualizationGeometry();
 	if(!super::Initialize())
@@ -46,7 +49,7 @@ bool Cylinder::Initialize(float radius, float height, int slices, int stacks, ve
 
 }
 
-void Cylinder::BuildShape(float radius, float height, int slices, int stacks)
+void Cylinder::BuildShape(float base_radius, float top_radius, float height, int slices, int stacks)
 {
 	mat4 mv(1.0);
 
@@ -55,6 +58,9 @@ void Cylinder::BuildShape(float radius, float height, int slices, int stacks)
 	{
 		int curr_slice = i % slices;
 		int curr_stack = i / slices;
+
+		float radius = (top_radius * (float(curr_stack)/float(stacks))) + (base_radius * (1-(float(curr_stack)/float(stacks))));
+		cout << base_radius << " " << top_radius << " " << radius << endl;
 
 		this->vertex_list[i].position.x = float(radius * sin(2.0 * M_PI * ((float)curr_slice/((float)slices -1))));
 		this->vertex_list[i].position.y = curr_stack * (height / (float)stacks);

@@ -228,14 +228,13 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 	}	
 }
 
-vec3 Mesh::CrossAndNormalize(int index, int point_direction1, int point_direction2)
+vec3 Mesh::CrossProduct(int index, int point_direction1, int point_direction2)
 {
 	vec3 norm1 = this->vertex_list[index + point_direction1].position - this->vertex_list[index].position;
 	vec3 norm2 = this->vertex_list[index + point_direction2].position - this->vertex_list[index].position;
 
 	vec3 normal = cross(norm1, norm2);
-	
-	return normalize(normal);
+	return normal;
 }
 
 void Mesh::CalcNormals(int slices, int stacks)
@@ -269,13 +268,13 @@ void Mesh::CalcNormals(int slices, int stacks)
 		{
 			if(!on_right)
 			{
-				normal += CrossAndNormalize(index, right, up);
+				normal += CrossProduct(index, right, up);
 				num_normals_to_avg++;
 			}
 			if(!on_left)
 			{
-				normal += CrossAndNormalize(index, up, up_left);
-				normal += CrossAndNormalize(index, up_left, left);
+				normal += CrossProduct(index, up, up_left);
+				normal += CrossProduct(index, up_left, left);
 				num_normals_to_avg += 2;
 			}
 		}
@@ -283,18 +282,19 @@ void Mesh::CalcNormals(int slices, int stacks)
 		{
 			if(!on_right)
 			{
-				normal += CrossAndNormalize(index, down_right, right);
-				normal += CrossAndNormalize(index, down, down_right);
+				normal += CrossProduct(index, down_right, right);
+				normal += CrossProduct(index, down, down_right);
 				num_normals_to_avg += 2;
 			}
 			if(!on_left)
 			{
-				normal += CrossAndNormalize(index, left, down);
+				normal += CrossProduct(index, left, down);
 				num_normals_to_avg++;
 			}
 		}
 
 		normal /= num_normals_to_avg;
+		normal = normalize(normal);
 		this->vertex_list[index].normal = normal;
 		// cout << this->vertex_list[index].normal.x << " " << this->vertex_list[index].normal.y << " " << this->vertex_list[index].normal.z << endl;
 	}
