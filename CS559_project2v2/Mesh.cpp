@@ -159,12 +159,12 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-
-	#ifdef _DEBUG
-	if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
-	#else
+	// For testing when drawing mesh - used solid shader for everything when in debug mode
+	//#ifdef _DEBUG
+	//if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
+	//#else
 	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
-	#endif
+	//#endif
 	{
 		return false;
 	}

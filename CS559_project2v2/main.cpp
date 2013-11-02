@@ -137,9 +137,26 @@ void DisplayOnscreenText()
 
 	// Look at the same place constantly, and shift the modelview matrix in front of the near plane
 	mat4 text = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	
+	glMatrixMode(GL_MODELVIEW);
+
+	// Draw pause text if paused
+	// not working right now - fix later!
+	/*
+	if(globals.paused)
+	{
+		text = translate(text, vec3(globals.window_size.x, globals.window_size.y, -1.0f));
+		text = scale(text, vec3(.25f, .25f, .25f));
+		glLoadMatrixf(value_ptr(text));
+		glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char *)"PAUSED");
+		//reset modelview text matrix when done drawing centered text.
+		text = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+	}
+	*/
 	text = translate(text, vec3(0.0f, 5.0f, -1.0f));
 	text = scale(text, vec3(.15f, .15f, .15f));
-	glMatrixMode(GL_MODELVIEW);
+	
 
 	vector<string> * s = &globals.onscreen_text;
 	for(auto i = s->begin(); i < s->end(); i++) {
@@ -269,7 +286,7 @@ void ThirdPersonModeDraw(mat4 proj)
 	mv = scale(mv, vec3(globals.ship_size));
 	//rotate is good though
 	mv = rotate(mv, -10.0f, vec3(0.0f, 1.0f, 0.0f));
-	mv = rotate(mv, 90.0f - globals.horiz_cam_angle/3.0f, vec3(0.0f, 0.0f, 1.0f));
+	mv = rotate(mv, 90.0f, vec3(0.0f, 0.0f, 1.0f));
 	spaceship.Draw(proj, mv, globals.window_size, globals.ship_rotate);
 
 }
@@ -357,7 +374,11 @@ void CloseFunc()
 
 void KeyboardFunc(unsigned char c, int x, int y)
 {
-	
+	//ignore keyboard function except unpause and quit when paused
+	if((c != 27) && (c != 'x') && (c != 'p') && globals.paused)
+	{
+		return;
+	}
 	switch(c) {
 		case 'x':
 		case 27:
@@ -433,6 +454,12 @@ void KeyboardFunc(unsigned char c, int x, int y)
 
 void SpecialFunc(int key, int x, int y)
 {
+	//ignore special keys when paused.
+	if(globals.paused)
+	{
+		return;
+	}
+
 	switch(key)	{
 	case GLUT_KEY_LEFT:
 		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 1.0f), 360.0f);
@@ -450,6 +477,7 @@ void SpecialFunc(int key, int x, int y)
 		break;
 	case GLUT_KEY_F1:
 		globals.current_mode++;
+		globals.horiz_cam_angle = globals.vert_cam_angle = 0.0f;
 		//update the display text!
 		globals.onscreen_text.pop_back();
 		switch(globals.current_mode)
@@ -490,13 +518,12 @@ void TimerFunc(int value)
 int main(int argc, char * argv[])
 {
 	//make sure we have a filename in argv! argc must equal 2
-	/*
 	if(argc != 2)
 	{
 		cout << "specify a mars file por favor!" << endl;
 		return -1;
 	}
-	*/
+	
 
 	//initialize and set options
 	glutInit(&argc, argv);
@@ -534,7 +561,12 @@ int main(int argc, char * argv[])
 	{
 		return -1;
 	}
-	if(!mars.Initialize("mars_low_rez.txt", 3.0f, 0.15f, vec3(1.0f, 0.1f, 0.1f)))
+
+#ifdef _DEBUG
+	if(!mars.Initialize("mars_low_rez.txt", 3.0f, 0.15f, vec3(0.6f, 0.1f, 0.1f)))
+#else
+	if(!mars.Initialize(argv[1], 3.0f, 0.15f, vec3(0.6f, 0.1f, 0.1f)))
+#endif
 	{
 		return -1;
 	}
