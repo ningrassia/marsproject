@@ -92,6 +92,7 @@ void Spaceship::EnableNormals(bool dn)
 {
 	sphere.EnableNormals(dn);
 	cylinder.EnableNormals(dn);
+	wing.EnableNormals(dn);
 }
 
 Spaceship::~Spaceship()
