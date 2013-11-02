@@ -48,6 +48,7 @@ public:
 
 	float ship_height;
 	float ship_rotate;
+	float ship_size;
 
 	float horiz_cam_angle, vert_cam_angle, cam_radius;
 	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
@@ -71,7 +72,7 @@ Globals::Globals()
 	this->aspect_ratio = (float)(window_size.x) / (float)(window_size.y);
 	this->window_closed = true;
 
-	this->near_plane = 1.0f;
+	this->near_plane = 0.1f;
 	this->far_plane = 90.0f;
 	this->fov = 50.0f;
 
@@ -91,8 +92,9 @@ Globals::Globals()
 	this->starfield_inner_radius = 25.0;
 	this->starfield_num_stars = 10000;
 
-	this->ship_height = 0.0f;
+	this->ship_height = 3.2f;
 	this->ship_rotate = 0.0f;
+	this->ship_size = 0.07f;
 
 	this->current_mode = Ship;
 	this->horiz_cam_angle = 0;
@@ -129,7 +131,7 @@ void DrawAxes()
 void DisplayOnscreenText()
 {
 	glColor3f(.9f, .9f, .9f);
-	mat4 orth = ortho(0.0f, (float)globals.window_size.x, 0.0f, (float)globals.window_size.y, 1.0f, 10.0f);
+	mat4 orth = ortho(0.0f, (float)globals.window_size.x, 0.0f, (float)globals.window_size.y, 0.1f, 10.0f);
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(value_ptr(orth));
 
@@ -198,11 +200,11 @@ void FirstPersonModeDraw(mat4 proj)
 
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
-	//replace 3.5f with mars radius + maybe 2x mars displacement?
-	vec3 eyePos = vec3(0.0f, 0.0f, 4.5f);
-	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle)),
-						(cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle))),
-						(sin(toRadian(globals.vert_cam_angle))))
+	//The angle adjustments are to ensure that default values have us facing a good direction
+	vec3 eyePos = vec3(0.0f, 0.0f, 4.0f);
+	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)) * sin(toRadian(globals.horiz_cam_angle - 90.0f)),
+						(cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)) * cos(toRadian(globals.horiz_cam_angle - 90.0f))),
+						(sin(toRadian(globals.vert_cam_angle/2.0f - 45.0f))))
 						+ eyePos;
 
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
@@ -224,14 +226,31 @@ void ThirdPersonModeDraw(mat4 proj)
 
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
-	vec3 eyePos = vec3(0.0f, 0.0f, 4.5f);
-	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle)),
-						(cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle))),
-						(sin(toRadian(globals.vert_cam_angle))))
+	//The angle adjustments are to ensure that default values have us facing a good direction
+	vec3 eyePos = vec3(0.0f, 0.0f, 4.0f);
+	vec3 lookVec = vec3(-cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)),
+						0.0f,
+						sin(toRadian(globals.vert_cam_angle/2.0f - 45.0f))
+						)
 						+ eyePos;
 
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
 	mv = lookAt(eyePos, lookVec, upVec);
+	mat4 saved_mv = mv;
+	
+	//limit rotation - only for TPV
+	if(globals.horiz_cam_angle > 89.0f)
+	{
+		globals.horiz_cam_angle = 89.0f;
+	}
+	else if(globals.horiz_cam_angle < -89.0f)
+	{
+		globals.horiz_cam_angle = -89.0f;
+	}
+	//first rotate is experiment!
+	mv = rotate(mv, globals.horiz_cam_angle/2.0f, vec3(0.0f, 0.0f, 1.0f));
+	mv = rotate(mv, globals.horiz_cam_angle, vec3(1.0f, 0.0f, 0.0f));
+
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
@@ -243,15 +262,14 @@ void ThirdPersonModeDraw(mat4 proj)
 
 
 
-	//reset our matrix to draw the ship!
 	//translate/scale values are guesses right now.
-	mv = lookAt(eyePos, lookVec, upVec);
-	mv = translate(mv, vec3(0.0f, 0.0f, globals.ship_height));
-	mv = scale(mv, vec3(0.2f,0.2f,0.2f));
+	//restore unrotated modelview so we control the ship!
+	mv = saved_mv;
+	mv = translate(mv, vec3(-1.0f, 0.0f, globals.ship_height));
+	mv = scale(mv, vec3(globals.ship_size));
 	//rotate is good though
-	mv = rotate(mv, 90.0f, vec3(0.0f, 0.0f, 1.0f));
-
-	//don't want to rotate the ship?
+	mv = rotate(mv, -10.0f, vec3(0.0f, 1.0f, 0.0f));
+	mv = rotate(mv, 90.0f - globals.horiz_cam_angle/3.0f, vec3(0.0f, 0.0f, 1.0f));
 	spaceship.Draw(proj, mv, globals.window_size, globals.ship_rotate);
 
 }
@@ -398,16 +416,16 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
 			break;
 		case '2':
-			globals.ship_height -= 0.1f;
+			globals.ship_height -= 0.01f;
 			break;
 		case '4':
-			globals.ship_rotate -= float(M_PI)/5.0f;
+			globals.ship_rotate -= float(M_PI)/3.0f;
 			break;
 		case '6':
-			globals.ship_rotate += float(M_PI)/5.0f;
+			globals.ship_rotate += float(M_PI)/3.0f;
 			break;
 		case '8':
-			globals.ship_height = 0.1f;
+			globals.ship_height += 0.01f;
 			break;
 	}
 	return;
