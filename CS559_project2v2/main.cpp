@@ -17,6 +17,7 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "Spaceship.h"
+#include "Mars.h"
 
 using namespace std;
 using namespace glm;
@@ -83,9 +84,9 @@ Globals::Globals()
 
 	this->polygon_detail = 40;
 	this->starfield_enabled = true;
-	this->starfield_depth = 10.0;
+	this->starfield_depth = 20.0;
 	this->starfield_inner_radius = 25.0;
-	this->starfield_num_stars = 5000;
+	this->starfield_num_stars = 10000;
 
 	this->current_mode = Ship;
 	this->horiz_cam_angle = 0;
@@ -97,6 +98,7 @@ Starfield starfield;
 Sphere sphere;
 Cylinder cylinder;
 Spaceship spaceship;
+Mars mars;
 
 // Utility function for conversion from degree to radians
 float toRadian(float d)
@@ -155,15 +157,10 @@ void ShipModeDraw(mat4 proj)
 	// also draw a starfield
 	if(globals.starfield_enabled)
 	{
-		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+		starfield.Draw(proj, mv, globals.window_size, 0);
 	}
 
-	//rotate ONLY the ship!
-	mv = rotate(mv,
-				(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
-				/globals.rotate_factor),
-				vec3(0.0f, 1.0f, 0.0f)); 
-	spaceship.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	spaceship.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 
 
@@ -184,19 +181,10 @@ void MarsModeDraw(mat4 proj)
 	// also draw a starfield
 	if(globals.starfield_enabled)
 	{
-		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+		starfield.Draw(proj, mv, globals.window_size, 0);
 	}
 
-	//rotate ONLY mars!
-	mv = rotate(mv,
-				(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
-				/globals.rotate_factor),
-				vec3(0.0f, 1.0f, 0.0f)); 
-
-
-
-	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
-
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 }
 
@@ -206,60 +194,57 @@ void FirstPersonModeDraw(mat4 proj)
 
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
-	//REPLACE 2.0f with MARS MAX RADIUS
-	vec3 eyePos = vec3(-2.0f, 0.0f, 1.0f);
-	vec3 lookVec = vec3(0.0f, 0.0f, 1.0f);
+	//replace 3.5f with mars radius + maybe 2x mars displacement?
+	vec3 eyePos = vec3(0.0f, 0.0f, 4.5f);
+	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle)),
+						(cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle))),
+						(sin(toRadian(globals.vert_cam_angle))))
+						+ eyePos;
+
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
 	mv = lookAt(eyePos, lookVec, upVec);
-
-	//rotate based on time!
-	mv = rotate(mv,
-		-(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
-			/globals.rotate_factor),
-		vec3(0.0f, 1.0f, 0.0f)); 
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
 	{
-		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+		starfield.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 	}
 	//REPLACE ME WITH MARS!
-	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 
 }
 
 void ThirdPersonModeDraw(mat4 proj)
 {
+	//REPLACE ME WITH WHATEVER WE DO IN FIRSTPERSONDRAW WHEN THAT's WORKING BETTEr.
+
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
 	//REPLACE 2.0f with MARS MAX RADIUS
-	vec3 eyePos = vec3(-2.0f, 0.0f, 1.0f);
-	vec3 lookVec = vec3(0.0f, 0.0f, 1.0f);
+	vec3 eyePos = vec3(-2.0f, 0.0f, 3.5f);
+	vec3 lookVec = vec3(0.0f, 0.0f, 3.5f);
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
 	mv = lookAt(eyePos, lookVec, upVec);
-
-	//rotate based on time!
-	mv = rotate(mv,
-		-(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
-			/globals.rotate_factor),
-		vec3(0.0f, 1.0f, 0.0f)); 
 
 	// also draw a starfield
 	if(globals.starfield_enabled)
 	{
-		starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+		starfield.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 	}
 	//REPLACE ME WITH MARS!
-	sphere.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 	//reset our matrix to draw the ship!
 	//translate/scale values are guesses right now.
 	mv = lookAt(eyePos, lookVec, upVec);
-	mv = translate(mv, vec3(0.0f, 0.0f, 1.5f));
+	mv = translate(mv, vec3(0.0f, 0.0f, 3.5f));
 	mv = scale(mv, vec3(0.2f,0.2f,0.2f));
+	//rotate is good though
+	mv = rotate(mv, 90.0f, vec3(0.0f, 0.0f, 1.0f));
 
-	cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	//don't want to rotate the ship?
+	spaceship.Draw(proj, mv, globals.window_size, 0);
 
 }
 void StarsModeDraw(mat4 proj)
@@ -277,7 +262,7 @@ void StarsModeDraw(mat4 proj)
 			/globals.rotate_factor),
 		vec3(0.0f, 1.0f, 0.0f)); 
 
-	starfield.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
+	starfield.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 }
 
@@ -358,6 +343,7 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			cylinder.EnableNormals(globals.normals_enabled);
 			sphere.EnableNormals(globals.normals_enabled);
 			spaceship.EnableNormals(globals.normals_enabled);
+			mars.EnableNormals(globals.normals_enabled);
 			break;
 		case 'w':
 			globals.wireframe_enabled = !globals.wireframe_enabled;
@@ -473,6 +459,13 @@ void TimerFunc(int value)
 int main(int argc, char * argv[])
 {
 	//make sure we have a filename in argv! argc must equal 2
+	/*
+	if(argc != 2)
+	{
+		cout << "specify a mars file por favor!" << endl;
+		return -1;
+	}
+	*/
 
 	//initialize and set options
 	glutInit(&argc, argv);
@@ -499,29 +492,35 @@ int main(int argc, char * argv[])
 	if (glewInit() != GLEW_OK)
 	{
 		cerr << "GLEW failed to initialize." << endl;
-		return 0;
+		return -1;
 	}
 
 	if(!sphere.Initialize(3, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
 	{
-		return false;
+		return -1;
 	}
 	
 	if(!cylinder.Initialize(1, 3, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
 	{
-		return false;
+		return -1;
 	}
 
 	if(!spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f)))
 	{
-		return false;
+		return -1;
 	}
 
 	// initialize a starfield - lots of stars!
 	if(!starfield.Initialize(globals.starfield_inner_radius,globals.starfield_depth,globals.starfield_num_stars))
 	{
-		return 0;
+		return -1;
 	}
+
+	if(!mars.Initialize("mars_low_rez.txt", 3.0f, 0.15f, vec3(1.0f, 0.1f, 0.1f)))
+	{
+		return -1;
+	}
+
 	
 	glutTimerFunc(globals.period, TimerFunc, 0);
 	glutMainLoop();

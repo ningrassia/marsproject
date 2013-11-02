@@ -111,7 +111,8 @@ void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const gl
 	}
 
 	glEnable(GL_DEPTH_TEST);
-
+	//rotate along y axis based on time!
+	modelview = rotate(modelview, time, vec3(0.0f, 1.0f, 0.0f)); 
 	mat4 mvp = projection * modelview;
 	mat3 nm = inverse(transpose(mat3(modelview)));
 
