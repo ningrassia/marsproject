@@ -252,7 +252,7 @@ void Mesh::CalcNormals(int slices, int stacks)
 	vec3 normal;
 	int num_normals_to_avg;
 
-	for(int index = 0; index < this->vertex_list.size(); index++)
+	for(size_t index = 0; index < this->vertex_list.size(); index++)
 	{
 		int curr_slice = index % slices;
 		int curr_stack = index / slices;

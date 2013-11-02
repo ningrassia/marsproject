@@ -37,7 +37,7 @@ public:
 
 	bool paused;
 	float current_time, time_last_pause_began, total_time_paused;
-	float period;
+	int period;
 	float rotate_factor;
 
 	int polygon_detail;
@@ -142,18 +142,19 @@ void DisplayOnscreenText()
 
 	// Draw pause text if paused
 	// not working right now - fix later!
-	/*
+	
 	if(globals.paused)
 	{
-		text = translate(text, vec3(globals.window_size.x, globals.window_size.y, -1.0f));
+		text = translate(text, vec3(globals.window_size.x/2, globals.window_size.y/2, -1.0f));
 		text = scale(text, vec3(.25f, .25f, .25f));
+		text = translate(text, vec3(-3 * glutStrokeWidth(GLUT_STROKE_MONO_ROMAN, 'P'),  -glutStrokeHeight(GLUT_STROKE_MONO_ROMAN) / 2, 0.0f));
 		glLoadMatrixf(value_ptr(text));
 		glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char *)"PAUSED");
 		//reset modelview text matrix when done drawing centered text.
 		text = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
 	}
-	*/
+	
 	text = translate(text, vec3(0.0f, 5.0f, -1.0f));
 	text = scale(text, vec3(.15f, .15f, .15f));
 	
@@ -409,15 +410,15 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			}
 			break;
 		case '+':
-			if(globals.rotate_factor > 0.25)
+			if(globals.rotate_factor > 0.25f)
 			{
-				globals.rotate_factor = globals.rotate_factor / 2.0;
+				globals.rotate_factor = globals.rotate_factor / 2.0f;
 			}
 			break;
 		case '-':
-			if(globals.rotate_factor < 16.0)
+			if(globals.rotate_factor < 16.0f)
 			{
-				globals.rotate_factor = globals.rotate_factor * 2.0;
+				globals.rotate_factor = globals.rotate_factor * 2.0f;
 			}
 			break;
 		case '[':
