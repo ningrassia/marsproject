@@ -17,7 +17,6 @@ public:
 	void BuildMesh(int slices, int stacks, glm::vec3 color); // height will end up as stacks, width will end up as slices
 	bool Initialize();
 	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
-	//vector<int> getAdjacentVertices(int index);
 
 	Shader shader;
 	Shader solid_color;
@@ -25,6 +24,8 @@ public:
 protected:
 	virtual void BuildShape();
 	virtual void BuildNormalVisualizationGeometry();
+	glm::vec3 CrossAndNormalize(int index, int vertex_position1, int vertex_position2);
+	virtual void CalcNormals(int slices, int stacks);
 	std::vector<VertexAttributesPCN> vertex_list;
 private:
 	typedef Object super;

@@ -227,3 +227,186 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 		return;
 	}	
 }
+
+vec3 Mesh::CrossAndNormalize(int index, int point_direction1, int point_direction2)
+{
+	vec3 norm1 = this->vertex_list[index + point_direction1].position - this->vertex_list[index].position;
+	vec3 norm2 = this->vertex_list[index + point_direction2].position - this->vertex_list[index].position;
+
+	vec3 normal = cross(norm1, norm2);
+	
+	return normalize(normal);
+}
+
+void Mesh::CalcNormals(int slices, int stacks)
+{
+	int up_left = slices - 1;
+	int up = slices;
+	int up_right = slices + 1;
+	int right = 1;
+	int down_right = -slices + 1;
+	int down = -slices;
+	int down_left = -slices - 1;
+	int left = -1;
+
+	vec3 normal;
+	int num_normals_to_avg;
+
+	for(int index = 0; index < this->vertex_list.size(); index++)
+	{
+		int curr_slice = index % slices;
+		int curr_stack = index / slices;
+
+		bool on_top = (curr_stack == stacks - 1);
+		bool on_bottom = (curr_stack == 0);
+		bool on_left = (curr_slice == 0);
+		bool on_right = (curr_slice == slices - 1);
+
+		normal = vec3(0.0f, 0.0f, 0.0f);
+		num_normals_to_avg = 0;
+
+		if(!on_top)
+		{
+			if(!on_right)
+			{
+				normal += CrossAndNormalize(index, right, up);
+				num_normals_to_avg++;
+			}
+			if(!on_left)
+			{
+				normal += CrossAndNormalize(index, up, up_left);
+				normal += CrossAndNormalize(index, up_left, left);
+				num_normals_to_avg += 2;
+			}
+		}
+		if(!on_bottom)
+		{
+			if(!on_right)
+			{
+				normal += CrossAndNormalize(index, down_right, right);
+				normal += CrossAndNormalize(index, down, down_right);
+				num_normals_to_avg += 2;
+			}
+			if(!on_left)
+			{
+				normal += CrossAndNormalize(index, left, down);
+				num_normals_to_avg++;
+			}
+		}
+
+		normal /= num_normals_to_avg;
+		this->vertex_list[index].normal = normal;
+		// cout << this->vertex_list[index].normal.x << " " << this->vertex_list[index].normal.y << " " << this->vertex_list[index].normal.z << endl;
+	}
+
+	// Take the average of the left and right (they touch in every case here)
+	vec3 avg_edge_normal;
+	for(int stack = 0; stack < stacks; stack++)
+	{
+		avg_edge_normal = this->vertex_list[stack*slices].normal + this->vertex_list[stack*slices + (slices - 1)].normal;
+		avg_edge_normal /= 2;
+		avg_edge_normal = normalize(avg_edge_normal);
+
+		this->vertex_list[stack*slices].normal = avg_edge_normal;
+		this->vertex_list[stack*slices + (slices - 1)].normal = avg_edge_normal;
+	}
+}
+
+
+
+/*
+vector<int> PlanarMesh::FindAdjacentVertices(int index)
+ +{
+ +  vector<int> adj_indices;
+ +
+ +  // Vector has 8 indixes, starting at UL corner, clockwise to L
+ +  for(int h = -1; h < 2; h++) {
+ +    for(int v = -1; v < 2; v++) {
+ +      // UL
+ +      if(OutOfBounds(index, upleft)) { adj_indices.push_back(-1); } 
+ +      else { adj_indices.push_back(index - mesh_dimensions.x - 1); }
+ +      // U
+ +      if(OutOfBounds(index, up)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index - mesh_dimensions.x); }
+ +      // UR
+ +      if(OutOfBounds(index, upright)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index - mesh_dimensions.x + 1); }
+ +      // R
+ +      if(OutOfBounds(index, right)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index + 1); }
+ +      // DR
+ +      if(OutOfBounds(index, downright)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index + mesh_dimensions.x + 1); }
+ +      // D
+ +      if(OutOfBounds(index, down)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index + mesh_dimensions.x); }
+ +      // DL
+ +      if(OutOfBounds(index, downleft)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index + mesh_dimensions.x - 1); }
+ +      // L
+ +      if(OutOfBounds(index, left)) { adj_indices.push_back(-1); }
+ +      else { adj_indices.push_back(index -1); }
+ +    }
+ +  }
+ +  return adj_indices;
+ +}
+
+ bool PlanarMesh::OutOfBounds(int index, direction dir)
+ +{
+ +  bool oob = false;
+ +
+ +  switch(dir) {
+ +    case upleft:
+ +      // Check L and then U
+ +      if(index % (int)mesh_dimensions.x == 0 || index / (int)mesh_dimensions.y == 0) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case up:
+ +      // check U
+ +      if(index / (int)mesh_dimensions.y == 0) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case upright:
+ +      // check R and then U
+ +      if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1 || index / (int)mesh_dimensions.y == 0) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case right:
+ +      // check R
+ +      if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case downright:
+ +      // check R and then D
+ +      if(index % (int)mesh_dimensions.x == mesh_dimensions.x - 1 || index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case down:
+ +      // check D
+ +      if(index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case downleft:
+ +      // check L and then D
+ +      if(index % (int)mesh_dimensions.x == 0 || index / (int)mesh_dimensions.y == mesh_dimensions.y - 1) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    case left:
+ +      // check L
+ +      if(index % (int)mesh_dimensions.x == 0) {
+ +        oob = true;
+ +      }
+ +      break;
+ +    default:
+ +      cout << "invalid direction sent into PlanarMesh::IsOutOfBounds" << endl;
+ +  }
+ +  return oob;
+ +}
+ */
