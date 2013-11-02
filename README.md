@@ -4,7 +4,21 @@ marsproject
 CS 559 Project 2 Repo!
 
 TODO:
-EVERYTHING
+	- Change camera view / move ship up / pull camera back in ship mode
+	- Alternate shader for Mars (too shiny)
+	- Set up shader so mars has a dark side 
+	- Make 1sta dn 3rd person view different perspectives
+	- texture Mars
+	- Modify ship movement in 3rd person, so awkward
+	- Speeding up rotation even needed? It looks bad
+	- 'NOGGLE'
+	- Comment out '[' and ']' polygon functionality
+	- Change text color so it doesn't run into the stars
+	- Add cockpit for fun
+	
+	- CLEAN. UP. CODE.
+	
+	
 
 Structure stuff:
 Files/Object

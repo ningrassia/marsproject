@@ -11,17 +11,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mars.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="PlanarMesh.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Spaceship.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Starfield.cpp" />
     <ClCompile Include="VertexAttributes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="Mars.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="PlanarMesh.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Spaceship.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Starfield.h" />
     <ClInclude Include="VertexAttributes.h" />
   </ItemGroup>
@@ -30,6 +38,11 @@
     <None Include="phong_shader.vert" />
     <None Include="solid_shader.frag" />
     <None Include="solid_shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Debug\mars.txt" />
+    <Text Include="..\Debug\mars_low_rez.txt" />
+    <Text Include="..\Debug\mars_med_rez.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C169D617-57CE-47F0-B06E-8F66730A4ECF}</ProjectGuid>
