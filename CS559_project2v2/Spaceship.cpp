@@ -86,6 +86,7 @@ void Spaceship::TakeDown()
 {
 	cylinder.TakeDown();
 	sphere.TakeDown();
+	wing.TakeDown();
 }
 
 void Spaceship::EnableNormals(bool dn)

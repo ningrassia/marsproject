@@ -228,7 +228,7 @@ void ThirdPersonModeDraw(mat4 proj)
 	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle)),
 						(cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle))),
 						(sin(toRadian(globals.vert_cam_angle))))
-						+ globals.ship_height;
+						+ eyePos;
 
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
 	mv = lookAt(eyePos, lookVec, upVec);
