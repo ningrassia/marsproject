@@ -28,6 +28,17 @@ void Sphere::BuildNormalVisualizationGeometry()
 	
 }
 
+void Sphere::CalcNormals(int slices, int stacks)
+{
+	super::CalcNormals(slices, stacks);
+
+	for(int slice = 0; slice < slices; slice++)
+	{
+		this->vertex_list[slice].normal = vec3(0.f, -1.0f, 0.0f);
+		this->vertex_list[slice + slices*(stacks - 1)].normal = vec3(0.f, 1.0f, 0.0f);
+	}
+}
+
 bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 {
 	// Initialize a flat mesh - Mesh::Inizialize(slices, stacks)
@@ -40,6 +51,7 @@ bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 
 	BuildMesh(slices, stacks, color);
 	BuildShape(radius, slices, stacks);
+	CalcNormals(slices, stacks);
 	this->BuildNormalVisualizationGeometry();
 	if(!super::Initialize())
 	{
@@ -48,11 +60,6 @@ bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 	
 
 	return true;
-}
-
-void Sphere::CalculateNormals()
-{
-
 }
 
 void Sphere::BuildShape(float radius, int slices, int stacks)
@@ -64,17 +71,17 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 		int curr_stack = i / slices;
 
 		//right now we're not adding the fan at top/bottom so may cause problems for texturing?
-		float v_angle = -(float(M_PI) / 2.0f) + (float(curr_stack) * (float(M_PI) / float(stacks-1)));
+		float v_angle = -(float(M_PI) / 2.0f) + (float(curr_stack) * ((float(M_PI) / float(stacks - 1))));
 		float h_angle = (2.0f * float(M_PI) * (float(curr_slice) / float(slices - 1)));
 
 		this->vertex_list[i].position.x = radius * cos(v_angle) * sin(h_angle);
 		this->vertex_list[i].position.y = radius * sin(v_angle);
 		this->vertex_list[i].position.z = radius * cos(v_angle) * cos(h_angle);
 		
-		// Update normals
+		/*// Update normals
 		this->vertex_list[i].normal.x = cos(v_angle) * sin(h_angle);
 		this->vertex_list[i].normal.y = sin(v_angle);
-		this->vertex_list[i].normal.z = cos(v_angle) * cos(h_angle);
+		this->vertex_list[i].normal.z = cos(v_angle) * cos(h_angle);*/
 		
 		// Add more points to vertex_indices for connectivity between the two sides after wrapping
 		// Check if on far right edge - then connect with left edge

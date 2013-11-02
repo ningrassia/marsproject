@@ -8,7 +8,7 @@ public:
 	Sphere();
 	bool Initialize(float radius, int slices, int stacks, glm::vec3 color);
 	void BuildNormalVisualizationGeometry();
-	void CalculateNormals();
+	void CalcNormals(int slices, int stacks);
 	void BuildShape(float radius, int slices, int stacks);
 	~Sphere();
 private:
