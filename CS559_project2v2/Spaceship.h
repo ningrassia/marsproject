@@ -17,7 +17,11 @@ public:
 	~Spaceship(void);
 
 private:
+	
+	void DrawBody(const mat4 & projection, mat4 mv, const ivec2 & size, const float time);
+	void DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, const float time);
 	Sphere sphere;
 	Cylinder cylinder;
+	Cylinder wing;
 };
 

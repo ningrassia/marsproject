@@ -12,8 +12,6 @@ Cylinder::Cylinder()
 
 void Cylinder::BuildNormalVisualizationGeometry()
 {
-	cout << "BUILDING NORMALS FOR CYLINDER" << endl;
-
 	const float normal_scalar = 0.125f;
 	int vertex_index = 0;
 	for(int i = 0; i < normal_vertices.size(); i++)
@@ -60,7 +58,6 @@ void Cylinder::BuildShape(float base_radius, float top_radius, float height, int
 		int curr_stack = i / slices;
 
 		float radius = (top_radius * (float(curr_stack)/float(stacks))) + (base_radius * (1-(float(curr_stack)/float(stacks))));
-		cout << base_radius << " " << top_radius << " " << radius << endl;
 
 		this->vertex_list[i].position.x = float(radius * sin(2.0 * M_PI * ((float)curr_slice/((float)slices -1))));
 		this->vertex_list[i].position.y = curr_stack * (height / (float)stacks);
