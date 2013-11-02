@@ -35,8 +35,7 @@ void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size
 	mv = translate(mv, vec3(0.0f, 1.0f, 0.0f));
 	mv = scale(mv, vec3(1.0f, .5f, 1.0f));
 	sphere.Draw(projection, mv, size, time);
-
-	
+		
 }
 
 void Spaceship::TakeDown()
