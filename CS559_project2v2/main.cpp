@@ -68,7 +68,7 @@ Globals::Globals()
 	this->window_closed = true;
 
 	this->near_plane = 1.0f;
-	this->far_plane = 50.0f;
+	this->far_plane = 90.0f;
 	this->fov = 50.0f;
 
 	this->wireframe_enabled = false;
@@ -90,7 +90,7 @@ Globals::Globals()
 	this->current_mode = Ship;
 	this->horiz_cam_angle = 0;
 	this->vert_cam_angle = 0;
-	this->cam_radius = 15;
+	this->cam_radius = 10;
 }
 
 Starfield starfield;
@@ -163,8 +163,6 @@ void ShipModeDraw(mat4 proj)
 				(((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused)
 				/globals.rotate_factor),
 				vec3(0.0f, 1.0f, 0.0f)); 
-	//Replace this with the ship later!
-	//cylinder.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 	spaceship.Draw(proj, mv, globals.window_size, (globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused);
 
 
@@ -399,6 +397,8 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			}
 			spaceship.TakeDown();
 			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
+			sphere.TakeDown();
+			sphere.Initialize(3, globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
 			break;
 		case ']':
 			if(globals.polygon_detail< 200) 
@@ -407,6 +407,8 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			}
 			spaceship.TakeDown();
 			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
+			sphere.TakeDown();
+			sphere.Initialize(3, globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
 			break;
 	}
 	return;
@@ -500,7 +502,7 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	if(!sphere.Initialize(2, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
+	if(!sphere.Initialize(3, 40, 40, vec3(1.0f, 0.0f, 0.0f)))
 	{
 		return false;
 	}
