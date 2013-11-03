@@ -44,12 +44,15 @@ public:
 	double starfield_inner_radius;
 	int starfield_num_stars;
 
+	bool ship_direction[4];
 	float ship_height;
 	float ship_rotate;
 	float ship_size;
 
+	bool camera_direction[4];
 	float horiz_cam_angle, vert_cam_angle, cam_radius;
 	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
+	enum Direction {Up, Down, Left, Right};
 	DisplayModes current_mode;
 	vector<std::string> onscreen_text;
 
@@ -439,19 +442,64 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
 			break;*/
 		case '5':
-			globals.ship_height -= 0.01f;
+			//globals.ship_height -= 0.01f;
+			globals.ship_direction[globals.Down] = true;
 			break;
 		case '4':
-			globals.ship_rotate -= float(M_PI)/3.0f;
+			//globals.ship_rotate -= float(M_PI)/3.0f;
+			globals.ship_direction[globals.Left] = true;
 			break;
 		case '6':
-			globals.ship_rotate += float(M_PI)/3.0f;
+			//globals.ship_rotate += float(M_PI)/3.0f;
+			globals.ship_direction[globals.Right] = true;
 			break;
 		case '8':
-			globals.ship_height += 0.01f;
+			//globals.ship_height += 0.01f;
+			globals.ship_direction[globals.Up] = true;
 			break;
 	}
 	return;
+}
+
+void KeyboardUp(unsigned char key, int x, int y)
+{
+	switch(key)
+	{
+		case '5':
+			globals.ship_direction[globals.Down] = false;
+			break;
+		case '4':
+			globals.ship_direction[globals.Left] = false;
+			break;
+		case '6':
+			globals.ship_direction[globals.Right] = false;
+			break;
+		case '8':
+			globals.ship_direction[globals.Up] = false;
+			break;
+
+	}
+}
+
+void SpecialUp(int key, int x, int y)
+{
+	switch(key)
+	{
+		case GLUT_KEY_UP:
+			//6if(!globals.vert_cam_angle < 89.0f)
+				globals.camera_direction[globals.Up] = false;
+			break;
+		case GLUT_KEY_DOWN:
+			//if(!globals.vert_cam_angle > -89.0f)
+				globals.camera_direction[globals.Down] = false;
+			break;
+		case GLUT_KEY_LEFT:
+			globals.camera_direction[globals.Left] = false;
+			break;
+		case GLUT_KEY_RIGHT:
+			globals.camera_direction[globals.Right] = false;
+			break;
+	}
 }
 
 void SpecialFunc(int key, int x, int y)
@@ -464,18 +512,22 @@ void SpecialFunc(int key, int x, int y)
 
 	switch(key)	{
 	case GLUT_KEY_LEFT:
-		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 1.0f), 360.0f);
+		//globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 1.0f), 360.0f);
+		globals.camera_direction[globals.Left] = true;
 		break;
 	case GLUT_KEY_RIGHT:
-		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 1.0f), 360.0f);
+		//globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 1.0f), 360.0f);
+			globals.camera_direction[globals.Right] = true;
 		break;
 	case GLUT_KEY_UP:
-		if(globals.vert_cam_angle < 89.0f)
-		globals.vert_cam_angle += 1.0f;
+		//if(globals.vert_cam_angle < 89.0f)
+			//globals.vert_cam_angle += 1.0f;
+			globals.camera_direction[globals.Up] = true;
 		break;
 	case GLUT_KEY_DOWN:
-		if(globals.vert_cam_angle > -89.0f)
-		globals.vert_cam_angle -= 1.0f;
+		//if(globals.vert_cam_angle > -89.0f)
+			//globals.vert_cam_angle -= 1.0f;
+			globals.camera_direction[globals.Down] = true;
 		break;
 	case GLUT_KEY_F1:
 		globals.current_mode++;
@@ -510,6 +562,46 @@ void SpecialFunc(int key, int x, int y)
 
 void TimerFunc(int value)
 {
+	// Control implementation for the CAMERA
+	if(globals.camera_direction[globals.Left])
+	{
+		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 0.5f), 360.0f);
+	}
+	if(globals.camera_direction[globals.Right])
+	{
+		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 0.5f), 360.0f);
+	}
+	if(globals.camera_direction[globals.Up])
+	{
+		if(globals.vert_cam_angle < 89.0f)
+			globals.vert_cam_angle += 0.5f;
+	}
+	if(globals.camera_direction[globals.Down])
+	{
+		if(globals.vert_cam_angle > -89.0f)
+			globals.vert_cam_angle -= 0.5f;
+	}
+
+	//Control Implementation for the SHIP
+	if(globals.ship_direction[globals.Left])
+	{
+		globals.ship_rotate -= float(M_PI)/3.0f;
+	}
+	if(globals.ship_direction[globals.Right])
+	{
+		globals.ship_rotate += float(M_PI)/3.0f;
+	}
+	if(globals.ship_direction[globals.Up])
+	{
+		if(globals.ship_height < 3.5)
+			globals.ship_height += 0.02f;
+	}
+	if(globals.ship_direction[globals.Down])
+	{
+		if(globals.ship_height > 3.05f)
+			globals.ship_height -= 0.02f;
+	}
+
 
 	//update our current time.
 	globals.current_time++;
@@ -546,6 +638,8 @@ int main(int argc, char * argv[])
 	glutCloseFunc(CloseFunc);
 	glutKeyboardFunc(KeyboardFunc);
 	glutSpecialFunc(SpecialFunc);
+	glutKeyboardUpFunc(KeyboardUp);
+	glutSpecialUpFunc(SpecialUp);
 
 	// Add onscreen text to string vector - we always start in ship mode!
 	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
