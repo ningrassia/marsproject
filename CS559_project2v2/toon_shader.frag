@@ -22,9 +22,10 @@ vec3 toonShade( )
 	n = -n;
 
   vec3 s = normalize(light_position - position);
-  float cosine = max(0.0, dot(s, Normal));
+  float cosine = max(0.0, dot(s, n));
   vec3 diffuse = vec3(0.5, 0.5, 0.5) * floor(cosine * levels) * scaleFactor;
 
+  //multiply vertex color by sum of diffuse(cel shading) and ambient light
   return color * (vec3(0.3, 0.3, 0.3) + diffuse);
 	
 }
