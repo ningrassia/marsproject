@@ -14,8 +14,6 @@
 #include <math.h>
 
 #include "Starfield.h"
-#include "Sphere.h"
-#include "Cylinder.h"
 #include "Spaceship.h"
 #include "Mars.h"
 
@@ -94,7 +92,7 @@ Globals::Globals()
 
 	this->ship_height = 3.2f;
 	this->ship_rotate = 0.0f;
-	this->ship_size = 0.07f;
+	this->ship_size = 0.03f;
 
 	this->current_mode = Ship;
 	this->horiz_cam_angle = 0;
@@ -210,22 +208,21 @@ void MarsModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, 0);
 	}
 
+	
+	mv = scale(mv, vec3(1.3f, 1.3f, 1.3f));
 	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 }
 
 void FirstPersonModeDraw(mat4 proj)
 {
-
-
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
 	//The angle adjustments are to ensure that default values have us facing a good direction
-	vec3 eyePos = vec3(0.0f, 0.0f, 4.0f);
+	vec3 eyePos = vec3(0.0f, 0.0f, 3.5f);
 	vec3 lookVec = vec3(cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)) * sin(toRadian(globals.horiz_cam_angle - 90.0f)),
 						(cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)) * cos(toRadian(globals.horiz_cam_angle - 90.0f))),
-						(sin(toRadian(globals.vert_cam_angle/2.0f - 45.0f))))
-						+ eyePos;
+						(sin(toRadian(globals.vert_cam_angle/2.0f - 30.0f)))) + eyePos;
 
 	vec3 upVec = vec3(0.0f,	0.0f, 1.0f);
 	mv = lookAt(eyePos, lookVec, upVec);
@@ -247,7 +244,7 @@ void ThirdPersonModeDraw(mat4 proj)
 	mat4 mv(1.0f);
 	//set up our position, view, and up vectors!
 	//The angle adjustments are to ensure that default values have us facing a good direction
-	vec3 eyePos = vec3(0.0f, 0.0f, 4.0f);
+	vec3 eyePos = vec3(.1f, 0.0f, 4.0f);
 	vec3 lookVec = vec3(-cos(toRadian(globals.vert_cam_angle/2.0f - 45.0f)),
 						0.0f,
 						sin(toRadian(globals.vert_cam_angle/2.0f - 45.0f))
