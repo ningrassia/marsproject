@@ -53,7 +53,7 @@ void Spaceship::DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, c
 
 void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size, const float time)
 {
-	mat4 mv = translate(modelview, vec3(0.0f, -3.0f, 0.0f));
+	mat4 mv = translate(modelview, vec3(0.0f, -2.0f, 0.0f));
 	//rotate here!
 	mv = rotate(mv, fmod(time, 360.0f), vec3(0.0f, 1.0f, 0.0f));
 	mat4 origin_matrix = mv;

@@ -146,10 +146,12 @@ void DisplayOnscreenText()
 	if(globals.paused)
 	{
 		text = translate(text, vec3(globals.window_size.x/2, globals.window_size.y/2, -1.0f));
-		text = scale(text, vec3(.25f, .25f, .25f));
+		text = scale(text, vec3(.40f, .40f, .40f));
 		text = translate(text, vec3(-3 * glutStrokeWidth(GLUT_STROKE_MONO_ROMAN, 'P'),  -glutStrokeHeight(GLUT_STROKE_MONO_ROMAN) / 2, 0.0f));
 		glLoadMatrixf(value_ptr(text));
+		glLineWidth(4.0f);
 		glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char *)"PAUSED");
+		glLineWidth(1.0f);
 		//reset modelview text matrix when done drawing centered text.
 		text = lookAt(vec3(0.0f, 0.0f, 3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
@@ -170,7 +172,7 @@ void DisplayOnscreenText()
 void ShipModeDraw(mat4 proj)
 {
 	mat4 mv(1.0f);
-	//Temporary lookat - always looking at the center point?
+
 	vec3 eyePos = vec3(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * cos(toRadian(globals.horiz_cam_angle)),
 						(globals.cam_radius * sin(toRadian(globals.vert_cam_angle))),
 						(globals.cam_radius * cos(toRadian(globals.vert_cam_angle)) * sin(toRadian(globals.horiz_cam_angle))));
@@ -345,7 +347,6 @@ void DisplayFunc()
 		default:
 			ShipModeDraw(proj);
 			break;
-
 	}
 	//no use repeating code!
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -409,6 +410,8 @@ void KeyboardFunc(unsigned char c, int x, int y)
 				globals.total_time_paused += (globals.current_time - globals.time_last_pause_began);
 			}
 			break;
+
+		/* Functionality to change rotation speed
 		case '+':
 			if(globals.rotate_factor > 0.25f)
 			{
@@ -420,7 +423,9 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			{
 				globals.rotate_factor = globals.rotate_factor * 2.0f;
 			}
-			break;
+			break;*/
+
+		/* Functionality to change slices and stacks
 		case '[':
 			if(globals.polygon_detail > 4) 
 			{
@@ -436,8 +441,8 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			}
 			spaceship.TakeDown();
 			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
-			break;
-		case '2':
+			break;*/
+		case '5':
 			globals.ship_height -= 0.01f;
 			break;
 		case '4':
@@ -545,7 +550,8 @@ int main(int argc, char * argv[])
 	// Add onscreen text to string vector - we always start in ship mode!
 	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
 	globals.onscreen_text.push_back("Esc to close");
-	globals.onscreen_text.push_back("w to toggle wireframe - n to noggle normals");
+	globals.onscreen_text.push_back("w to toggle wireframe - n to toggle normals");
+	globals.onscreen_text.push_back("F1 to switch modes");
 	globals.onscreen_text.push_back("Ship Mode");
 
 	if (glewInit() != GLEW_OK)
