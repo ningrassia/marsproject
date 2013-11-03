@@ -116,12 +116,13 @@ void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const gl
 	mat4 mvp = projection * modelview;
 	mat3 nm = inverse(transpose(mat3(modelview)));
 
+	glEnable(GL_PROGRAM_POINT_SIZE);
 	solid_color.Use();
 	this->GLReturnedError("Starfield::Draw - after use");
 	solid_color.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
 	this->GLReturnedError("Starfield::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
-	glPointSize(2.0f);
+	//glPointSize(2.0f);
 	glDrawElements(GL_POINTS, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
 	glBindVertexArray(0);
 	glUseProgram(0);

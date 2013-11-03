@@ -71,7 +71,7 @@ Globals::Globals()
 	this->window_closed = true;
 
 	this->near_plane = 0.1f;
-	this->far_plane = 90.0f;
+	this->far_plane = 150.0f;
 	this->fov = 50.0f;
 
 	this->wireframe_enabled = false;
@@ -128,7 +128,7 @@ void DrawAxes()
 
 void DisplayOnscreenText()
 {
-	glColor3f(.9f, .9f, .9f);
+	
 	mat4 orth = ortho(0.0f, (float)globals.window_size.x, 0.0f, (float)globals.window_size.y, 0.1f, 10.0f);
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(value_ptr(orth));
@@ -139,8 +139,7 @@ void DisplayOnscreenText()
 	glMatrixMode(GL_MODELVIEW);
 
 	// Draw pause text if paused
-	// not working right now - fix later!
-	
+	glColor3f(.5f, .7f, .9f);
 	if(globals.paused)
 	{
 		text = translate(text, vec3(globals.window_size.x/2, globals.window_size.y/2, -1.0f));
@@ -158,7 +157,7 @@ void DisplayOnscreenText()
 	text = translate(text, vec3(0.0f, 5.0f, -1.0f));
 	text = scale(text, vec3(.15f, .15f, .15f));
 	
-
+	//glColor3f(.2f, .5f, .9f);
 	vector<string> * s = &globals.onscreen_text;
 	for(auto i = s->begin(); i < s->end(); i++) {
 		glLoadMatrixf(value_ptr(text));
