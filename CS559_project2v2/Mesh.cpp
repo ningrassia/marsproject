@@ -8,7 +8,7 @@ using namespace glm;
 
 Mesh::Mesh()
 {
-	// TODO:Color stuff later
+	this->shader_index = 0;
 }
 
 Mesh::~Mesh()
@@ -29,6 +29,11 @@ void Mesh::BuildNormalVisualizationGeometry()
 		this->normal_indices.push_back(this->normal_vertices.size() - 2);
 		this->normal_indices.push_back(this->normal_vertices.size() - 1);
 	}
+}
+
+void Mesh::StepShader()
+{
+	this->shader_index = ++this->shader_index % this->shaders.size();
 }
 
 void Mesh::BuildMesh(int slices, int stacks, vec3 color)
@@ -163,19 +168,31 @@ bool Mesh::Initialize()
 	//#ifdef _DEBUG
 	//if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
 	//#else
-	if (!this->shader.Initialize("phong_shader.vert", "phong_shader.frag"))
+	if (!this->phong_shader.Initialize("phong_shader.vert", "phong_shader.frag"))
 	//#endif
 	{
 		return false;
 	}
 
-	if (!this->solid_color.Initialize("solid_shader.vert", "solid_shader.frag"))
+	if (!this->solid_color_shader.Initialize("solid_shader.vert", "solid_shader.frag"))
+	{
 		return false;
+	}
+
+	
+	if(!this->toon_shader.Initialize("phong_shader.vert", "toon_shader.frag"))
+	{
+		return false;
+	}
 
 	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
 		return false;
 	}
+
+	this->shaders.push_back(&this->phong_shader);
+	this->shaders.push_back(&this->toon_shader);
+	//this->shaders.push_back(&this->solid_color_shader);
 
 	return true;
 }
@@ -187,7 +204,7 @@ void Mesh::BuildShape()
 void Mesh::TakeDown()
 {
 	this->vertex_list.clear();	// TODO: Check for memory leaks!!
-	this->shader.TakeDown();
+	this->phong_shader.TakeDown();
 	super::TakeDown();
 }
 
@@ -204,9 +221,9 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 	mat4 mvp = projection * modelview;
 	mat3 nm = inverse(transpose(mat3(modelview)));
 	
-	shader.Use();
+	this->shaders[this->shader_index]->Use();
 	this->GLReturnedError("Mesh::Draw - after use");
-	shader.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
+	this->shaders[this->shader_index]->CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
 	this->GLReturnedError("Mesh::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
 	glDrawElements(GL_TRIANGLES, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
@@ -215,15 +232,15 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 
 	if (this->draw_normals)
 	{
-		this->solid_color.Use();
-		this->solid_color.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
+		this->solid_color_shader.Use();
+		this->solid_color_shader.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
 		glBindVertexArray(this->normal_array_handle);
 		glDrawElements(GL_LINES , this->normal_indices.size(), GL_UNSIGNED_INT , &this->normal_indices[0]);
 		glBindVertexArray(0);
 		glUseProgram(0);
 	}
 
-	if (this->GLReturnedError("Top::Draw - on exit"))
+	if (this->GLReturnedError("Mesh::Draw - on exit"))
 	{
 		return;
 	}	

@@ -13,6 +13,7 @@ public:
 	bool Initialize(int sliceDetail, int stackDetail, vec3 color);
 	void Draw(const mat4 & projection, mat4 modelview, const ivec2 & size, const float time = 0);
 	void EnableNormals(bool dn);
+	void StepShader();
 	void TakeDown();
 	~Spaceship(void);
 

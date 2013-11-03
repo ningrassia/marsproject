@@ -501,6 +501,10 @@ void SpecialFunc(int key, int x, int y)
 				break;
 		}
 		break;
+	case GLUT_KEY_F2:
+		mars.StepShader();
+		spaceship.StepShader();
+		break;
 	}
 }
 

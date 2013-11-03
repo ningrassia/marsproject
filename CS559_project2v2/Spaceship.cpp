@@ -89,6 +89,13 @@ void Spaceship::TakeDown()
 	wing.TakeDown();
 }
 
+void Spaceship::StepShader()
+{
+	cylinder.StepShader();
+	sphere.StepShader();
+	wing.StepShader();
+}
+
 void Spaceship::EnableNormals(bool dn)
 {
 	sphere.EnableNormals(dn);
