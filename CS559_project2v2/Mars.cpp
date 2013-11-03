@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include "Mars.h"
+#include "ilcontainer.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -34,6 +35,10 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 		myfile >>temp_offset;
 		mars_radius.push_back(radius + (temp_offset * max_offset));
 	}
+
+	ILContainer MarsTexture;
+	MarsTexture.Initialize("Mars.jpg");
+	MarsTexture.Bind();
 
 	BuildMesh(slices, stacks, color);
 	BuildShape(mars_radius, slices, stacks);

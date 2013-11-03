@@ -28,7 +28,13 @@ void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
 	// Compute the ADS shading model here, return ambient
 	// and diffuse color in ambAndDiff, and return specular
 	// color in spec
-	…
+
+
+
+	ambAndDiff = Light.Intensity.x*Material.Ka + Light.Intensity.y * Material.Kd * dot(Normal, vec3(Light.Position) - vec3(Position));
+	//specular isn't done yet.
+	spec = vec3(0,0,0);
+	 
 }
 
 void main() 

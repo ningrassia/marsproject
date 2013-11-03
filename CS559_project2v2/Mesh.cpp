@@ -186,7 +186,7 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-	if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag");
+	if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag"));
 	{
 		return false;
 	}
@@ -197,7 +197,7 @@ bool Mesh::Initialize()
 	}
 
 	this->shaders.push_back(&this->phong_shader);
-	this->shaders.push_back(&this->texture_shader);
+	//this->shaders.push_back(&this->texture_shader);
 	this->shaders.push_back(&this->toon_shader);
 	//this->shaders.push_back(&this->solid_color_shader);
 
