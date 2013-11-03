@@ -29,7 +29,7 @@ public:
 	virtual bool Initialize();
 	virtual bool PostGLInitialize(GLuint * vertex_array_handle, GLuint * vertex_coordinate_handle, GLsizeiptr sz, const GLvoid * ptr);
 
-	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0) = 0;
+	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time, glm::vec3 light_pos);
 	virtual ~Object();
 
 	inline void EnableNormals(bool dn) { this->draw_normals = dn; } 

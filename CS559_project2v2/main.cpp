@@ -49,6 +49,8 @@ public:
 	float ship_height;
 	float ship_rotate;
 	float ship_size;
+	
+	vec3 light_position;
 
 	float horiz_cam_angle, vert_cam_angle, cam_radius;
 	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
@@ -100,6 +102,8 @@ Globals::Globals()
 	this->horiz_cam_angle = 0;
 	this->vert_cam_angle = 0;
 	this->cam_radius = 10;
+
+	this->light_position = vec3(30.0f, 0.0f, 0.0f);
 }
 
 Starfield starfield;
@@ -184,7 +188,7 @@ void ShipModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, 0);
 	}
 
-	spaceship.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
+	spaceship.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor, globals.light_position);
 
 
 
@@ -208,7 +212,7 @@ void MarsModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, 0);
 	}
 
-	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor, globals.light_position);
 
 }
 
@@ -234,7 +238,7 @@ void FirstPersonModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 	}
 	
-	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor, globals.light_position);
 
 
 }
@@ -276,7 +280,7 @@ void ThirdPersonModeDraw(mat4 proj)
 		starfield.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 	}
 	
-	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
+	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor, globals.light_position);
 
 
 
@@ -288,7 +292,7 @@ void ThirdPersonModeDraw(mat4 proj)
 	//rotate is good though
 	mv = rotate(mv, -10.0f, vec3(0.0f, 1.0f, 0.0f));
 	mv = rotate(mv, 90.0f, vec3(0.0f, 0.0f, 1.0f));
-	spaceship.Draw(proj, mv, globals.window_size, globals.ship_rotate);
+	spaceship.Draw(proj, mv, globals.window_size, globals.ship_rotate, globals.light_position);
 
 }
 void StarsModeDraw(mat4 proj)
@@ -519,11 +523,13 @@ void TimerFunc(int value)
 int main(int argc, char * argv[])
 {
 	//make sure we have a filename in argv! argc must equal 2
+#ifndef _DEBUG
 	if(argc != 2)
 	{
 		cout << "specify a mars file por favor!" << endl;
 		return -1;
 	}
+#endif
 	
 
 	//initialize and set options

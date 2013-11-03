@@ -11,7 +11,7 @@ public:
 	Starfield(void);
 	void TakeDown();
 	bool Initialize(double inner_radius, double depth, int stars);
-	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
+	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time, glm::vec3 light_pos = glm::vec3(0.0f, 0.0f, 0.0f));
 
 	Shader solid_color;
 

@@ -103,7 +103,7 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	return true;
 }
 
-void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
+void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time, vec3 light_pos)
 {
 	if(this->GLReturnedError("Starfield::Draw - on entry"))
 	{

@@ -191,7 +191,7 @@ void Mesh::TakeDown()
 	super::TakeDown();
 }
 
-void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
+void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time, glm::vec3 light_pos)
 {
 	if(this->GLReturnedError("Mesh::Draw - on entry"))
 	{
@@ -207,6 +207,7 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 	shader.Use();
 	this->GLReturnedError("Mesh::Draw - after use");
 	shader.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
+	shader.CustomSetup(value_ptr(light_pos));
 	this->GLReturnedError("Mesh::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
 	glDrawElements(GL_TRIANGLES, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);

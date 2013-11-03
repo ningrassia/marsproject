@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Object.h"
 #include "Shader.h"
+#include "LightPosShader.h"
 
 class Mesh: public Object
 {
@@ -16,9 +17,9 @@ public:
 	void TakeDown();
 	void BuildMesh(int slices, int stacks, glm::vec3 color); // height will end up as stacks, width will end up as slices
 	bool Initialize();
-	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time = 0);
+	virtual void Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time, glm::vec3 light_pos);
 
-	Shader shader;
+	LightPosShader shader;
 	Shader solid_color;
 	~Mesh();
 protected:

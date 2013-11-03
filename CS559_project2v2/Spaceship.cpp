@@ -24,34 +24,34 @@ bool Spaceship::Initialize(int sliceDetail, int stackDetail, vec3 color)
 }
 
 
-void Spaceship::DrawBody(const mat4 & projection, mat4 mv, const ivec2 & size, const float time)
+void Spaceship::DrawBody(const mat4 & projection, mat4 mv, const ivec2 & size, const float time, vec3 light_pos)
 {
-	sphere.Draw(projection, mv, size, time);
+	sphere.Draw(projection, mv, size, time, light_pos);
 
 	mv = scale(mv, vec3(1.0f, 4.0f, 1.0f));
-	cylinder.Draw(projection, mv, size, time);
+	cylinder.Draw(projection, mv, size, time, light_pos);
 
 	mv = translate(mv, vec3(0.0f, 1.0f, 0.0f));
 	mv = scale(mv, vec3(1.0f, 0.5f, 1.0f));
-	sphere.Draw(projection, mv, size, time);
+	sphere.Draw(projection, mv, size, time, light_pos);
 }
 
-void Spaceship::DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, const float time)
+void Spaceship::DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, const float time, vec3 light_pos)
 {
 	mv = scale(mv, vec3(3.0f, 2.0f, .2f));
 	mv = rotate(mv, -90.0f, vec3(0.0f, 0.0f, 1.0f));
-	wing.Draw(projection, mv, size, time);
+	wing.Draw(projection, mv, size, time, light_pos);
 
 	mv = translate(mv, vec3(0.0f, 1.0f, 0.0f));
 	mv = rotate(mv, -90.0f, vec3(0.0f, 0.0f, 1.0f));
 	mv = scale(mv, vec3(1.0f/3.0f, .5f, 1.0f/.2f));
 	mv = scale(mv, vec3(.2f, .2f, .2f));
 	mv = translate(mv, vec3(0.0f, -2.0f, 0.0f));
-	DrawBody(projection, mv, size, time);
+	DrawBody(projection, mv, size, time, light_pos);
 
 }
 
-void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size, const float time)
+void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size, const float time, vec3 light_pos)
 {
 	mat4 mv = translate(modelview, vec3(0.0f, -3.0f, 0.0f));
 	//rotate here!
@@ -59,7 +59,7 @@ void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size
 	mat4 origin_matrix = mv;
 
 	mv = scale(mv, vec3(.6f, 1.0f, .6f));
-	DrawBody(projection, mv, size, 0);
+	DrawBody(projection, mv, size, 0, light_pos);
 
 	mv = origin_matrix;
 
@@ -68,7 +68,7 @@ void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size
 	for(int i = 0; i < 4; i++)
 	{
 
-		DrawWing(projection, mv, size, 0);
+		DrawWing(projection, mv, size, 0, light_pos);
 		if(i % 2 == 0)
 		{
 			mv = rotate(mv, 135.0f, vec3(0.0f, 1.0f, 0.0f));
