@@ -31,7 +31,7 @@ protected:
 	virtual void BuildNormalVisualizationGeometry();
 	glm::vec3 CrossProduct(int index, int vertex_position1, int vertex_position2);
 	virtual void CalcNormals(int slices, int stacks);
-	std::vector<VertexAttributesPCN> vertex_list;
+	std::vector<VertexAttributesPCNT> vertex_list;
 	std::vector<Shader *> shaders;
 
 private:

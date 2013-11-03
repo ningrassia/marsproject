@@ -71,9 +71,10 @@ void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 	{
 		for(int w = 0; w < slices; w++) 
 		{
-			VertexAttributesPCN vertex;
+			VertexAttributesPCNT vertex;
 			vertex.position = vec3((float)w, (float)h, 0.0f);
 			vertex.normal = n;
+			vertex.texture_coordinate = vec2(float(h) / float(stacks), float(w) / float(slices)); 
 			vertex.color = color; 
 			this->vertex_list.push_back(vertex);
 		}
@@ -126,7 +127,7 @@ bool Mesh::Initialize()
 	}
 
 	// Phong shader for mesh
-	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCN), &this->vertex_list[0]))
+	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCNT), &this->vertex_list[0]))
 	{
 		return false;
 	}
@@ -137,9 +138,9 @@ bool Mesh::Initialize()
 	}
 
 	// Put in values for shader's LAYOUT variables
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCN), (GLvoid *) 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCN), (GLvoid *) (sizeof(vec3) * 2));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCN), (GLvoid *) (sizeof(vec3) * 1));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCNT), (GLvoid *) 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCNT), (GLvoid *) (sizeof(vec3) * 2));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexAttributesPCNT), (GLvoid *) (sizeof(vec3) * 1));
 	// Activate them
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -185,12 +186,18 @@ bool Mesh::Initialize()
 		return false;
 	}
 
+	if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag");
+	{
+		return false;
+	}
+
 	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
 		return false;
 	}
 
 	this->shaders.push_back(&this->phong_shader);
+	this->shaders.push_back(&this->texture_shader);
 	this->shaders.push_back(&this->toon_shader);
 	//this->shaders.push_back(&this->solid_color_shader);
 
