@@ -18,7 +18,7 @@ TODO:
 	- Set up shader so mars has a dark side 
 	- texture Mars
 	- Modify ship movement in 3rd person, so awkward
-	
+	- Maybe add a spotlight??? perhaps? we'll see.
 	- Clean up code
 	- CLEAN. UP. CODE.
 	
@@ -29,6 +29,8 @@ DONE:
 	- Change text color so it doesn't run into the stars
 	- Make 1sta dn 3rd person view different perspectives
 	- Change camera view / move ship up / pull camera back in ship mode
+	- Mouse movement/Mouse wheel FOV
+
 	
 	
 
