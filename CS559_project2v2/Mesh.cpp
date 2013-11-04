@@ -186,10 +186,10 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-	if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag"));
+	/*if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag"));
 	{
 		return false;
-	}
+	}*/
 
 	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
