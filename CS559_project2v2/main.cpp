@@ -56,6 +56,11 @@ public:
 	DisplayModes current_mode;
 	vector<std::string> onscreen_text;
 
+	int mouse_x;
+	int mouse_y;
+
+	bool mouse_left;
+
 
 
 } globals;
@@ -531,7 +536,9 @@ void SpecialFunc(int key, int x, int y)
 		break;
 	case GLUT_KEY_F1:
 		globals.current_mode++;
+		//reset camera angle and fov on mode switch
 		globals.horiz_cam_angle = globals.vert_cam_angle = 0.0f;
+		globals.fov = 50.0f;
 		//update the display text!
 		globals.onscreen_text.pop_back();
 		switch(globals.current_mode)
@@ -613,6 +620,71 @@ void TimerFunc(int value)
 	}
 }
 
+void Motion(int x, int y)
+{
+	//track position like the passive function if left button isn't pressed!
+	if(!globals.mouse_left)
+	{
+		globals.mouse_x = x;
+		globals.mouse_y = y;
+		return;
+	}
+
+	//horizontal mouse motion
+	float x_delta = float(x - globals.mouse_x) / 4.0f;
+	globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + x_delta), 360.0f);
+
+	//vertical mouse motion
+	float y_delta = float(y - globals.mouse_y) / 4.0f;
+	globals.vert_cam_angle += y_delta;
+	//restrict vertical motion to +- 89.0f degrees.
+	if(globals.vert_cam_angle > 89.0f)
+		globals.vert_cam_angle = 89.0f;
+	if(globals.vert_cam_angle < -89.0f)
+		globals.vert_cam_angle = -89.0f;
+
+	//store current mouse position to calculate delta!
+	globals.mouse_x = x;
+	globals.mouse_y = y;
+}
+
+void PassiveMotion(int x, int y)
+{
+	//keep track of mouse position when no button is pressed
+	globals.mouse_x = x;
+	globals.mouse_y = y;
+}
+
+void MouseWheel(int wheel, int direction, int x, int y)
+{
+	switch (direction)
+	{
+		//wheel down
+	case -1:
+		if(globals.fov < 80.0f)
+			globals.fov += 2.0f;
+		break;
+		//wheel up
+	case 1:
+		if(globals.fov > 10.0f)
+			globals.fov -= 2.0f;
+		break;
+	}
+}
+
+void Mouse(int button, int state, int x, int y)
+{
+	//reset mouse position on button up/down.
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		globals.mouse_left = true;
+	}
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+	{
+		globals.mouse_left = false;
+	}
+}
+
 int main(int argc, char * argv[])
 {
 	//make sure we have a filename in argv! argc must equal 2
@@ -640,6 +712,10 @@ int main(int argc, char * argv[])
 	glutSpecialFunc(SpecialFunc);
 	glutKeyboardUpFunc(KeyboardUp);
 	glutSpecialUpFunc(SpecialUp);
+	glutMotionFunc(Motion);
+	glutMouseFunc(Mouse);
+	glutPassiveMotionFunc(PassiveMotion);
+	glutMouseWheelFunc(MouseWheel);
 
 	// Add onscreen text to string vector - we always start in ship mode!
 	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
