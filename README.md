@@ -3,20 +3,32 @@ marsproject
 
 CS 559 Project 2 Repo!
 
+NOTE: I worked for a long time to implement a new, working specular shader that allowed mars to have a dark side. It was a no go.\
+	  I didn't have time to implement texture or better controls.
+	  Those are my two big goals.
+	  We have a non-specular shader, but it is not implemented yet.
+	  But our only bonus at this point is moderate ship control and the toon shader. Maybe stars count.
+	  We gotta decide what we want to add and then do it.
+	  I am tired.
+	  i am going home to die.
+
 TODO:
-	- Change camera view / move ship up / pull camera back in ship mode
+
 	- Alternate shader for Mars (too shiny)
 	- Set up shader so mars has a dark side 
-	- Make 1sta dn 3rd person view different perspectives
 	- texture Mars
 	- Modify ship movement in 3rd person, so awkward
+	
+	- Clean up code
+	- CLEAN. UP. CODE.
+	
+DONE:
 	- Speeding up rotation even needed? It looks bad
 	- 'NOGGLE'
 	- Comment out '[' and ']' polygon functionality
 	- Change text color so it doesn't run into the stars
-	- Add cockpit for fun
-	
-	- CLEAN. UP. CODE.
+	- Make 1sta dn 3rd person view different perspectives
+	- Change camera view / move ship up / pull camera back in ship mode
 	
 	
 
