@@ -39,6 +39,7 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 	BuildShape(mars_radius, slices, stacks);
 	CalcNormals(slices, stacks);
 	BuildNormalVisualizationGeometry();
+	this->has_specular = false;
 	if(!Mesh::Initialize())
 	{
 		return false;

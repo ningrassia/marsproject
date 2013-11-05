@@ -27,6 +27,7 @@ public:
 	~Mesh();
 
 protected:
+	bool has_specular;
 	virtual void BuildShape();
 	virtual void BuildNormalVisualizationGeometry();
 	glm::vec3 CrossProduct(int index, int vertex_position1, int vertex_position2);

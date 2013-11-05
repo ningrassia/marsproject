@@ -9,6 +9,7 @@ using namespace glm;
 Mesh::Mesh()
 {
 	this->shader_index = 0;
+	this->has_specular = true;
 }
 
 Mesh::~Mesh()
@@ -165,14 +166,24 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-	// For testing when drawing mesh - used solid shader for everything when in debug mode
-	//#ifdef _DEBUG
-	//if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
-	//#else
-	if (!this->phong_shader.Initialize("phong_shader.vert", "phong_shader.frag"))
-	//#endif
+	if(has_specular)
 	{
-		return false;
+		// For testing when drawing mesh - used solid shader for everything when in debug mode
+		//#ifdef _DEBUG
+		//if (!this->shader.Initialize("solid_shader.vert", "solid_shader.frag"))
+		//#else
+		if (!this->phong_shader.Initialize("phong_shader.vert", "phong_shader.frag"))
+		//#endif
+		{
+			return false;
+		}
+	} 
+	else
+	{
+		if (!this->phong_shader.Initialize("phong_shader.vert", "NoSpec_shader.frag"))
+		{
+			return false;
+		}
 	}
 
 	if (!this->solid_color_shader.Initialize("solid_shader.vert", "solid_shader.frag"))
