@@ -60,3 +60,18 @@ Functions named in camelcase, uppercase first word
 	e.g.: void AddWheel()
 Curly brackets: you like to do next line. I like to do same line except for functions.
 	...we'll talk about that one.
+	
+	
+	README FOR PRESENTATION
+	Project 2:
+	Renders a spaceship and mars model(imported from heightmap) in various camera modes
+	Spec features:
+	Arrows - move camera - all modes but starfield only.
+	w for wireframe mode.
+	5 states - switch with F1 - ship, mars, 1st person, 3rd person, starfield
+	
+	Bonus features:
+	Mouse movement - click and drag for camera
+	Position/rotate the ship in 3rd person view
+	Smooth rotation with camera! - run on the timer function!
+	Normals - not scaled perfectly, though. n toggles.

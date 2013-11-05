@@ -629,19 +629,22 @@ void Motion(int x, int y)
 		globals.mouse_y = y;
 		return;
 	}
+	// only do motion when not paused!
+	if(!globals.paused)
+	{
+		//horizontal mouse motion
+		float x_delta = float(x - globals.mouse_x) / 4.0f;
+		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + x_delta), 360.0f);
 
-	//horizontal mouse motion
-	float x_delta = float(x - globals.mouse_x) / 4.0f;
-	globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + x_delta), 360.0f);
-
-	//vertical mouse motion
-	float y_delta = float(y - globals.mouse_y) / 4.0f;
-	globals.vert_cam_angle += y_delta;
-	//restrict vertical motion to +- 89.0f degrees.
-	if(globals.vert_cam_angle > 89.0f)
-		globals.vert_cam_angle = 89.0f;
-	if(globals.vert_cam_angle < -89.0f)
-		globals.vert_cam_angle = -89.0f;
+		//vertical mouse motion
+		float y_delta = float(y - globals.mouse_y) / 4.0f;
+		globals.vert_cam_angle += y_delta;
+		//restrict vertical motion to +- 89.0f degrees.
+		if(globals.vert_cam_angle > 89.0f)
+			globals.vert_cam_angle = 89.0f;
+		if(globals.vert_cam_angle < -89.0f)
+			globals.vert_cam_angle = -89.0f;
+	}
 
 	//store current mouse position to calculate delta!
 	globals.mouse_x = x;
@@ -657,6 +660,9 @@ void PassiveMotion(int x, int y)
 
 void MouseWheel(int wheel, int direction, int x, int y)
 {
+	//don't do anything if paused!
+	if(globals.paused)
+		return;
 	switch (direction)
 	{
 		//wheel down
