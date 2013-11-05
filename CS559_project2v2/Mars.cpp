@@ -35,10 +35,6 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 		mars_radius.push_back(radius + (temp_offset * max_offset));
 	}
 
-	//ILContainer MarsTexture;
-	//MarsTexture.Initialize("Mars.jpg");
-	//MarsTexture.Bind();
-
 	BuildMesh(slices, stacks, color);
 	BuildShape(mars_radius, slices, stacks);
 	CalcNormals(slices, stacks);

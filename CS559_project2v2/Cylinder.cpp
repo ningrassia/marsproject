@@ -62,26 +62,6 @@ void Cylinder::BuildShape(float base_radius, float top_radius, float height, int
 		this->vertex_list[i].position.x = float(radius * sin(2.0 * M_PI * ((float)curr_slice/((float)slices -1))));
 		this->vertex_list[i].position.y = curr_stack * (height / (float)stacks);
 		this->vertex_list[i].position.z = float(radius * cos(2.0 * M_PI * ((float)curr_slice/((float)slices -1))));
-		
-		/*// Update normals.
-		this->vertex_list[i].normal.x = float(sin(2.0 * M_PI * ((float)curr_slice/((float)slices - 1))));
-		this->vertex_list[i].normal.y = 0.0f;
-		this->vertex_list[i].normal.z = float(cos(2.0 * M_PI * ((float)curr_slice/((float)slices - 1))));*/
-		
-		// Add more points to vertex_indices for connectivity between the two sides after wrapping
-		// Check if on far right edge - then connect with left edge
-		/*if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
-		{
-			this->vertex_indices.push_back(i);
-			this->vertex_indices.push_back(i - slices + 1);
-			this->vertex_indices.push_back(i + slices);
-			super::BuildNormalVisualizationGeometry();
-
-			this->vertex_indices.push_back(i - slices + 1);
-			this->vertex_indices.push_back(i + 1);
-			this->vertex_indices.push_back(i + slices);
-			super::BuildNormalVisualizationGeometry();
-		}*/
 	}
 
 	

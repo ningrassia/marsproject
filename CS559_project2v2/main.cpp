@@ -92,7 +92,7 @@ Globals::Globals()
 	this->period = 1000 / 60;
 	this->rotate_factor = 4.0f;
 
-	this->polygon_detail = 40;
+	this->polygon_detail = 60;
 	this->starfield_enabled = true;
 	this->starfield_depth = 20.0;
 	this->starfield_inner_radius = 25.0;
@@ -414,38 +414,6 @@ void KeyboardFunc(unsigned char c, int x, int y)
 				globals.total_time_paused += (globals.current_time - globals.time_last_pause_began);
 			}
 			break;
-
-		/* Functionality to change rotation speed
-		case '+':
-			if(globals.rotate_factor > 0.25f)
-			{
-				globals.rotate_factor = globals.rotate_factor / 2.0f;
-			}
-			break;
-		case '-':
-			if(globals.rotate_factor < 16.0f)
-			{
-				globals.rotate_factor = globals.rotate_factor * 2.0f;
-			}
-			break;*/
-
-		/* Functionality to change slices and stacks
-		case '[':
-			if(globals.polygon_detail > 4) 
-			{
-				globals.polygon_detail--;
-			}
-			spaceship.TakeDown();
-			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
-			break;
-		case ']':
-			if(globals.polygon_detail< 200) 
-			{
-				globals.polygon_detail++;
-			}
-			spaceship.TakeDown();
-			spaceship.Initialize(globals.polygon_detail, globals.polygon_detail, vec3(1.0f, 0.0f, 0.0f));
-			break;*/
 		case '5':
 			//globals.ship_height -= 0.01f;
 			globals.ship_direction[globals.Down] = true;

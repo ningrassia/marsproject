@@ -14,7 +14,7 @@ using namespace glm;
 //or will be eventually, once the dang thing works!
 
 
-Starfield::Starfield(void)
+Starfield::Starfield()
 {
 	//don't need anything special here.
 }

@@ -77,26 +77,6 @@ void Sphere::BuildShape(float radius, int slices, int stacks)
 		this->vertex_list[i].position.x = radius * cos(v_angle) * sin(h_angle);
 		this->vertex_list[i].position.y = radius * sin(v_angle);
 		this->vertex_list[i].position.z = radius * cos(v_angle) * cos(h_angle);
-		
-		/*// Update normals
-		this->vertex_list[i].normal.x = cos(v_angle) * sin(h_angle);
-		this->vertex_list[i].normal.y = sin(v_angle);
-		this->vertex_list[i].normal.z = cos(v_angle) * cos(h_angle);*/
-		
-		// Add more points to vertex_indices for connectivity between the two sides after wrapping
-		// Check if on far right edge - then connect with left edge
-		/*if(curr_slice == slices - 1 && (curr_stack < stacks - 1)) 
-		{
-			this->vertex_indices.push_back(i);
-			this->vertex_indices.push_back(i - slices + 1);
-			this->vertex_indices.push_back(i + slices);
-			super::BuildNormalVisualizationGeometry();
-
-			this->vertex_indices.push_back(i - slices + 1);
-			this->vertex_indices.push_back(i + 1);
-			this->vertex_indices.push_back(i + slices);
-			super::BuildNormalVisualizationGeometry();
-		}*/
 	}
 }
 
