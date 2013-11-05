@@ -130,6 +130,7 @@ void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const gl
 
 void Starfield::TakeDown()
 {
+	this->vertex_indices.clear();
 	this->vertex_list.clear();	// TODO: Check for memory leaks!!
 	this->solid_color.TakeDown();
 	super::TakeDown();

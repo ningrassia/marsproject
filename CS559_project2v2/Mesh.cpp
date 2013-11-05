@@ -223,6 +223,8 @@ void Mesh::TakeDown()
 {
 	this->vertex_list.clear();	// TODO: Check for memory leaks!!
 	this->phong_shader.TakeDown();
+	this->solid_color_shader.TakeDown();
+	this->toon_shader.TakeDown();
 	super::TakeDown();
 }
 

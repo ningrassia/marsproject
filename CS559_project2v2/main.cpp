@@ -415,19 +415,15 @@ void KeyboardFunc(unsigned char c, int x, int y)
 			}
 			break;
 		case '5':
-			//globals.ship_height -= 0.01f;
 			globals.ship_direction[globals.Down] = true;
 			break;
 		case '4':
-			//globals.ship_rotate -= float(M_PI)/3.0f;
 			globals.ship_direction[globals.Left] = true;
 			break;
 		case '6':
-			//globals.ship_rotate += float(M_PI)/3.0f;
 			globals.ship_direction[globals.Right] = true;
 			break;
 		case '8':
-			//globals.ship_height += 0.01f;
 			globals.ship_direction[globals.Up] = true;
 			break;
 	}
@@ -454,27 +450,6 @@ void KeyboardUp(unsigned char key, int x, int y)
 	}
 }
 
-void SpecialUp(int key, int x, int y)
-{
-	switch(key)
-	{
-		case GLUT_KEY_UP:
-			//6if(!globals.vert_cam_angle < 89.0f)
-				globals.camera_direction[globals.Up] = false;
-			break;
-		case GLUT_KEY_DOWN:
-			//if(!globals.vert_cam_angle > -89.0f)
-				globals.camera_direction[globals.Down] = false;
-			break;
-		case GLUT_KEY_LEFT:
-			globals.camera_direction[globals.Left] = false;
-			break;
-		case GLUT_KEY_RIGHT:
-			globals.camera_direction[globals.Right] = false;
-			break;
-	}
-}
-
 void SpecialFunc(int key, int x, int y)
 {
 	//ignore special keys when paused.
@@ -485,22 +460,44 @@ void SpecialFunc(int key, int x, int y)
 
 	switch(key)	{
 	case GLUT_KEY_LEFT:
-		//globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 1.0f), 360.0f);
-		globals.camera_direction[globals.Left] = true;
+		if(globals.current_mode != globals.ThirdPerson)
+		{
+			globals.camera_direction[globals.Left] = true;
+		}
+		else
+		{
+			// ship control
+		}
 		break;
 	case GLUT_KEY_RIGHT:
-		//globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 1.0f), 360.0f);
+		if(globals.current_mode != globals.ThirdPerson)
+		{
 			globals.camera_direction[globals.Right] = true;
+		}
+		else
+		{
+			// ship
+		}
 		break;
 	case GLUT_KEY_UP:
-		//if(globals.vert_cam_angle < 89.0f)
-			//globals.vert_cam_angle += 1.0f;
+		if(globals.current_mode != globals.ThirdPerson)
+		{
 			globals.camera_direction[globals.Up] = true;
+		}
+		else
+		{
+			//ship
+		}
 		break;
 	case GLUT_KEY_DOWN:
-		//if(globals.vert_cam_angle > -89.0f)
-			//globals.vert_cam_angle -= 1.0f;
+		if(globals.current_mode != globals.ThirdPerson)
+		{
 			globals.camera_direction[globals.Down] = true;
+		}
+		else
+		{
+			//ship
+		}
 		break;
 	case GLUT_KEY_F1:
 		globals.current_mode++;
@@ -532,6 +529,27 @@ void SpecialFunc(int key, int x, int y)
 		mars.StepShader();
 		spaceship.StepShader();
 		break;
+	}
+}
+
+void SpecialUp(int key, int x, int y)
+{
+	switch(key)
+	{
+		case GLUT_KEY_UP:
+			//6if(!globals.vert_cam_angle < 89.0f)
+				globals.camera_direction[globals.Up] = false;
+			break;
+		case GLUT_KEY_DOWN:
+			//if(!globals.vert_cam_angle > -89.0f)
+				globals.camera_direction[globals.Down] = false;
+			break;
+		case GLUT_KEY_LEFT:
+			globals.camera_direction[globals.Left] = false;
+			break;
+		case GLUT_KEY_RIGHT:
+			globals.camera_direction[globals.Right] = false;
+			break;
 	}
 }
 
@@ -597,8 +615,8 @@ void Motion(int x, int y)
 		globals.mouse_y = y;
 		return;
 	}
-	// only do motion when not paused!
-	if(!globals.paused)
+	// only do motion when not paused or in Third person mode!
+	if(!globals.paused && globals.current_mode != globals.ThirdPerson)
 	{
 		//horizontal mouse motion
 		float x_delta = float(x - globals.mouse_x) / 4.0f;
@@ -628,8 +646,8 @@ void PassiveMotion(int x, int y)
 
 void MouseWheel(int wheel, int direction, int x, int y)
 {
-	//don't do anything if paused!
-	if(globals.paused)
+	//don't do anything if paused or in third person mode!
+	if(globals.paused || globals.current_mode == globals.ThirdPerson)
 		return;
 	switch (direction)
 	{
@@ -695,7 +713,7 @@ int main(int argc, char * argv[])
 	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
 	globals.onscreen_text.push_back("Esc to close");
 	globals.onscreen_text.push_back("w to toggle wireframe - n to toggle normals");
-	globals.onscreen_text.push_back("F1 to switch modes");
+	globals.onscreen_text.push_back("F1 to switch modes - F2 to toggle shader");
 	globals.onscreen_text.push_back("Ship Mode");
 
 	if (glewInit() != GLEW_OK)
