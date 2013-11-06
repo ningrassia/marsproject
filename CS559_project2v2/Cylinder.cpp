@@ -23,7 +23,8 @@ void Cylinder::BuildNormalVisualizationGeometry()
 	}
 }
 
-
+//Builds the mesh and shape for a cylinder, and creates the normals and their visualization.
+//Finishes with the standard initialize for any mesh object.
 bool Cylinder::Initialize(float base_radius, float top_radius, float height, int slices, int stacks, vec3 color) 
 {
 	// Initialize a flat mesh - Mesh::Inizialize(slices, stacks + 2)
@@ -47,6 +48,7 @@ bool Cylinder::Initialize(float base_radius, float top_radius, float height, int
 
 }
 
+//Modifies the vertices so they form a cylinder!
 void Cylinder::BuildShape(float base_radius, float top_radius, float height, int slices, int stacks)
 {
 	mat4 mv(1.0);

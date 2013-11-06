@@ -9,7 +9,7 @@ Spaceship::Spaceship(void)
 	
 }
 
-// Initialize() initializes a sphere and cylinder
+// Initialize() initializes a sphere and cylinder and our wing.
 bool Spaceship::Initialize(int sliceDetail, int stackDetail, vec3 color)
 {
 	cout << "Initilizing primitives to build ship..." << endl;
@@ -30,6 +30,7 @@ bool Spaceship::Initialize(int sliceDetail, int stackDetail, vec3 color)
 }
 
 
+//draws the body of the spaceship!
 void Spaceship::DrawBody(const mat4 & projection, mat4 mv, const ivec2 & size, const float time)
 {
 	sphere.Draw(projection, mv, size, time);
@@ -42,6 +43,7 @@ void Spaceship::DrawBody(const mat4 & projection, mat4 mv, const ivec2 & size, c
 	sphere.Draw(projection, mv, size, time);
 }
 
+//draws the wing of the spaceship.
 void Spaceship::DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, const float time)
 {
 	mv = scale(mv, vec3(3.0f, 2.0f, .2f));
@@ -57,6 +59,7 @@ void Spaceship::DrawWing(const mat4 & projection, mat4 mv, const ivec2 & size, c
 
 }
 
+//Draws a spaceship body, and four wings around it. 
 void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size, const float time)
 {
 	mat4 mv = translate(modelview, vec3(0.0f, -2.0f, 0.0f));
@@ -88,6 +91,7 @@ void Spaceship::Draw(const mat4 & projection, mat4 modelview, const ivec2 & size
 	mv = origin_matrix;
 }
 
+//take down the simple shapes that are used for the ship.
 void Spaceship::TakeDown()
 {
 	cylinder.TakeDown();
@@ -95,6 +99,7 @@ void Spaceship::TakeDown()
 	wing.TakeDown();
 }
 
+//steps through each mesh's shaders.
 void Spaceship::StepShader()
 {
 	cylinder.StepShader();
@@ -102,6 +107,7 @@ void Spaceship::StepShader()
 	wing.StepShader();
 }
 
+//sets the normal enable for each mesh.
 void Spaceship::EnableNormals(bool dn)
 {
 	sphere.EnableNormals(dn);

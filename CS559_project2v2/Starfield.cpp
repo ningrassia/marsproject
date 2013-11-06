@@ -16,9 +16,12 @@ using namespace glm;
 
 Starfield::Starfield()
 {
-	//don't need anything special here.
 }
 
+
+//Initialize our Starfield!
+//Generate a whole bunch of random points on a sphere with a randomized radius
+//Set up shaders, etc. as well.
 bool Starfield::Initialize(double inner_radius, double depth, int stars)
 {
 	// CHECK FOR ERRORS!
@@ -105,6 +108,7 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	return true;
 }
 
+//Draw the starfield - set up the solid color shader and pass in our points!
 void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
 {
 	if(this->GLReturnedError("Starfield::Draw - on entry"))
@@ -124,12 +128,12 @@ void Starfield::Draw(const glm::mat4 & projection, glm::mat4 modelview, const gl
 	solid_color.CommonSetup(time, value_ptr(size), value_ptr(projection), value_ptr(modelview), value_ptr(mvp), value_ptr(nm));
 	this->GLReturnedError("Starfield::Draw - after common setup");
 	glBindVertexArray(this->vertex_array_handle);
-	//glPointSize(2.0f);
 	glDrawElements(GL_POINTS, this->vertex_indices.size(), GL_UNSIGNED_INT, &this->vertex_indices[0]);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
 
+//Take down the starfield's stuff!
 void Starfield::TakeDown()
 {
 	this->vertex_indices.clear();

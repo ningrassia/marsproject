@@ -14,6 +14,7 @@ Sphere::Sphere()
 {
 }
 
+//Special normal geometry builder for spheres/mars.
 void Sphere::BuildNormalVisualizationGeometry()
 {
 	const float normal_scalar = 0.125f;
@@ -28,6 +29,8 @@ void Sphere::BuildNormalVisualizationGeometry()
 	
 }
 
+//Calculates the normal for a sphere.
+//Set all the normals for the top/bottom to straight up/down!
 void Sphere::CalcNormals(int slices, int stacks)
 {
 	super::CalcNormals(slices, stacks);
@@ -39,15 +42,10 @@ void Sphere::CalcNormals(int slices, int stacks)
 	}
 }
 
+//Build the mesh/shape, set up normals, and initialize the mesh bits.
 bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 {
-	// Initialize a flat mesh - Mesh::Inizialize(slices, stacks)
-	// Modify the points of that flat mesh by:
-	// - x = sin(PI * (curr_stack / stacks)) * cos(2PI * (curr_slice / slices))
-	// - y = sin(PI * (curr_stack / stacks)) * sin(2PI * (curr_slice / slices))
-	// - z = cos(PI * (curr_stack / stacks))
-	// Keep in mind, these are all with radius of 1 - need to scale everything by radius
-	// Make sure everything is centered around the origin or it'll be hard to manage
+
 
 	BuildMesh(slices, stacks, color);
 	BuildShape(radius, slices, stacks);
@@ -62,6 +60,7 @@ bool Sphere::Initialize(float radius, int slices, int stacks, vec3 color)
 	return true;
 }
 
+//Modify the points on the previously generated mesh so that we have a sphere.
 void Sphere::BuildShape(float radius, int slices, int stacks)
 {
 	// Loop through EACH INDEX.
