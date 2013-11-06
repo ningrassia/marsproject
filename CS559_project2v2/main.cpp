@@ -46,13 +46,13 @@ public:
 
 	bool ship_direction[4];
 	float ship_height;
-	float ship_rotate;
+	float ship_side_direction;
 	float ship_size;
 
 	bool camera_direction[4];
 	float horiz_cam_angle, vert_cam_angle, cam_radius;
 	enum DisplayModes {Ship, Mars, FirstPerson, ThirdPerson, Stars};
-	enum Direction {Up, Down, Left, Right};
+	enum Direction {Left, Right, Up, Down};
 	DisplayModes current_mode;
 	vector<std::string> onscreen_text;
 
@@ -99,7 +99,7 @@ Globals::Globals()
 	this->starfield_num_stars = 10000;
 
 	this->ship_height = 3.2f;
-	this->ship_rotate = 0.0f;
+	this->ship_side_direction = 0.0f;
 	this->ship_size = 0.03f;
 
 	this->current_mode = Ship;
@@ -285,16 +285,14 @@ void ThirdPersonModeDraw(mat4 proj)
 	mars.Draw(proj, mv, globals.window_size, ((globals.paused ? globals.time_last_pause_began : globals.current_time) - globals.total_time_paused) / globals.rotate_factor);
 
 
-
-	//translate/scale values are guesses right now.
 	//restore unrotated modelview so we control the ship!
 	mv = saved_mv;
-	mv = translate(mv, vec3(-1.0f, 0.0f, globals.ship_height));
+	mv = translate(mv, vec3(-1.0f, globals.ship_side_direction / 720.0f, globals.ship_height));
 	mv = scale(mv, vec3(globals.ship_size));
 	//rotate is good though
 	mv = rotate(mv, -10.0f, vec3(0.0f, 1.0f, 0.0f));
 	mv = rotate(mv, 90.0f, vec3(0.0f, 0.0f, 1.0f));
-	spaceship.Draw(proj, mv, globals.window_size, globals.ship_rotate);
+	spaceship.Draw(proj, mv, globals.window_size, globals.ship_side_direction);
 
 }
 void StarsModeDraw(mat4 proj)
@@ -467,6 +465,8 @@ void SpecialFunc(int key, int x, int y)
 		else
 		{
 			// ship control
+			globals.camera_direction[globals.Left] = true;
+			globals.ship_direction[globals.Left] = true;
 		}
 		break;
 	case GLUT_KEY_RIGHT:
@@ -477,6 +477,8 @@ void SpecialFunc(int key, int x, int y)
 		else
 		{
 			// ship
+			globals.camera_direction[globals.Right] = true;
+			globals.ship_direction[globals.Right] = true;
 		}
 		break;
 	case GLUT_KEY_UP:
@@ -487,6 +489,7 @@ void SpecialFunc(int key, int x, int y)
 		else
 		{
 			//ship
+			globals.ship_direction[globals.Up] = true;
 		}
 		break;
 	case GLUT_KEY_DOWN:
@@ -497,6 +500,7 @@ void SpecialFunc(int key, int x, int y)
 		else
 		{
 			//ship
+			globals.ship_direction[globals.Down] = true;
 		}
 		break;
 	case GLUT_KEY_F1:
@@ -537,18 +541,50 @@ void SpecialUp(int key, int x, int y)
 	switch(key)
 	{
 		case GLUT_KEY_UP:
-			//6if(!globals.vert_cam_angle < 89.0f)
+			if(globals.current_mode != globals.ThirdPerson)
+			{
 				globals.camera_direction[globals.Up] = false;
+			}
+			else
+			{
+				//ship control
+				globals.ship_direction[globals.Up] = false;
+			}
 			break;
 		case GLUT_KEY_DOWN:
-			//if(!globals.vert_cam_angle > -89.0f)
+			if(globals.current_mode != globals.ThirdPerson)
+			{
 				globals.camera_direction[globals.Down] = false;
+			}
+			else
+			{
+				//ship control
+				globals.ship_direction[globals.Down] = false;
+			}
 			break;
 		case GLUT_KEY_LEFT:
-			globals.camera_direction[globals.Left] = false;
+			if(globals.current_mode != globals.ThirdPerson)
+			{
+				globals.camera_direction[globals.Left] = false;
+			}
+			else
+			{
+				//ship control
+				globals.camera_direction[globals.Left] = false;
+				globals.ship_direction[globals.Left] = false;
+			}
 			break;
 		case GLUT_KEY_RIGHT:
-			globals.camera_direction[globals.Right] = false;
+			if(globals.current_mode != globals.ThirdPerson)
+			{
+				globals.camera_direction[globals.Right] = false;
+			}
+			else
+			{
+				//ship control
+				globals.camera_direction[globals.Right] = false;
+				globals.ship_direction[globals.Right] = false;
+			}
 			break;
 	}
 }
@@ -558,11 +594,25 @@ void TimerFunc(int value)
 	// Control implementation for the CAMERA
 	if(globals.camera_direction[globals.Left])
 	{
-		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 0.5f), 360.0f);
+		if(globals.current_mode != globals.ThirdPerson)
+		{
+			globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 0.5f), 360.0f);
+		}
+		else
+		{
+			globals.horiz_cam_angle = fmod((globals.horiz_cam_angle - 0.2f), 360.0f);
+		}
 	}
 	if(globals.camera_direction[globals.Right])
 	{
-		globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 0.5f), 360.0f);
+		if(globals.current_mode != globals.ThirdPerson)
+		{
+			globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 0.5f), 360.0f);
+		}
+		else
+		{
+			globals.horiz_cam_angle = fmod((globals.horiz_cam_angle + 0.2f), 360.0f);
+		}
 	}
 	if(globals.camera_direction[globals.Up])
 	{
@@ -576,23 +626,34 @@ void TimerFunc(int value)
 	}
 
 	//Control Implementation for the SHIP
-	if(globals.ship_direction[globals.Left])
+	if(globals.ship_direction[globals.Left] && globals.ship_side_direction > -50.0f)
 	{
-		globals.ship_rotate -= float(M_PI)/3.0f;
+		globals.ship_side_direction -= float(M_PI)/4.0f;
 	}
-	if(globals.ship_direction[globals.Right])
+	if(globals.ship_direction[globals.Right] && globals.ship_side_direction < 50.0f)
 	{
-		globals.ship_rotate += float(M_PI)/3.0f;
+		globals.ship_side_direction += float(M_PI)/4.0f;
+	}
+	if(!globals.ship_direction[globals.Left] && !globals.ship_direction[globals.Right])
+	{
+		if(globals.ship_side_direction > 0)
+		{
+			globals.ship_side_direction -= float(M_PI)/2.0f;
+		}
+		else if(globals.ship_side_direction < 0)
+		{
+			globals.ship_side_direction += float(M_PI)/2.0f;
+		}
 	}
 	if(globals.ship_direction[globals.Up])
 	{
-		if(globals.ship_height < 3.5)
-			globals.ship_height += 0.02f;
+		if(globals.ship_height > 3.05)
+			globals.ship_height -= 0.005f;
 	}
 	if(globals.ship_direction[globals.Down])
 	{
-		if(globals.ship_height > 3.05f)
-			globals.ship_height -= 0.02f;
+		if(globals.ship_height < 3.5f)
+			globals.ship_height += 0.005f;
 	}
 
 
