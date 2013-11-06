@@ -49,8 +49,8 @@ public:
 
 	int polygon_detail;
 	bool starfield_enabled;
-	double starfield_depth;
-	double starfield_inner_radius;
+	float starfield_depth;
+	float starfield_inner_radius;
 	int starfield_num_stars;
 
 	bool ship_direction[4];
@@ -770,6 +770,7 @@ int main(int argc, char * argv[])
 	globals.onscreen_text.push_back("Nik Ingrassia and Jackson Reed for CS559");
 	globals.onscreen_text.push_back("Esc to close");
 	globals.onscreen_text.push_back("w to toggle wireframe - n to toggle normals");
+	globals.onscreen_text.push_back("s to toggle starfield");
 	globals.onscreen_text.push_back("F1 to switch modes - F2 to toggle shader");
 	globals.onscreen_text.push_back("Ship Mode");
 

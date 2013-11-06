@@ -22,7 +22,7 @@ Starfield::Starfield()
 //Initialize our Starfield!
 //Generate a whole bunch of random points on a sphere with a randomized radius
 //Set up shaders, etc. as well.
-bool Starfield::Initialize(double inner_radius, double depth, int stars)
+bool Starfield::Initialize(float inner_radius, float depth, int stars)
 {
 	// CHECK FOR ERRORS!
 	if(this->GLReturnedError("Starfield::Initialize - on entry")) 
@@ -55,9 +55,9 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	////generate points for the stars, and place them in the arrays!
 	for(int i = 0; i < stars; i++)
 	{
-		float radius = ((double(rand())/double(RAND_MAX)) * depth) + inner_radius;
-		float h_angle = double(rand())/double(RAND_MAX) * M_PI * 2.0;
-		float v_angle = acos((2.0 * double(rand())/double(RAND_MAX)) - 1.0);	//stars will be concentrated at poles.
+		float radius = ((float(rand())/float(RAND_MAX)) * depth) + inner_radius;
+		float h_angle = float(rand())/float(RAND_MAX) * M_PI * 2.0;
+		float v_angle = acos((2.0 * float(rand())/float(RAND_MAX)) - 1.0);	//stars will be concentrated at poles.
 
 		
 		VertexAttributesP vertex = VertexAttributesP(vec3(

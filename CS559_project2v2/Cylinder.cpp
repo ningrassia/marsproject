@@ -14,7 +14,7 @@ void Cylinder::BuildNormalVisualizationGeometry()
 {
 	const float normal_scalar = 0.125f;
 	int vertex_index = 0;
-	for(int i = 0; i < normal_vertices.size(); i++)
+	for(uint i = 0; i < normal_vertices.size(); i++)
 	{
 		this->normal_vertices[i] = this->vertex_list[this->vertex_indices[vertex_index]].position;
 		i++;
