@@ -6,6 +6,7 @@
 using namespace std;
 using namespace glm;
 
+//Just sets up some object variables.
 Mesh::Mesh()
 {
 	this->shader_index = 0;
@@ -32,11 +33,13 @@ void Mesh::BuildNormalVisualizationGeometry()
 	}
 }
 
+//increments through the shaders to use!
 void Mesh::StepShader()
 {
 	this->shader_index = ++this->shader_index % this->shaders.size();
 }
 
+//Build a mesh of a given number of slices/stacks, with a single color.
 void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 {
 
@@ -114,6 +117,9 @@ void Mesh::BuildMesh(int slices, int stacks, vec3 color)
 	}
 }
 
+//Standard mesh initialize.
+//Initializes the object, then sets up our data buffers/inputs/etc
+//Initializes the shaders the object will use - Phong or noSpecPhong and the toon shader.
 bool Mesh::Initialize()
 {
 	// CHECK FOR ERRORS!
@@ -127,7 +133,7 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-	// Phong shader for mesh
+	// set up vertex array and the data buffer
 	if (!this->PostGLInitialize(&this->vertex_array_handle, &this->vertex_coordinate_handle, this->vertex_list.size() * sizeof(VertexAttributesPCNT), &this->vertex_list[0]))
 	{
 		return false;
@@ -197,20 +203,13 @@ bool Mesh::Initialize()
 		return false;
 	}
 
-	/*if(!this->texture_shader.Initialize("texture_shader.vert", "texture_shader.frag"));
-	{
-		return false;
-	}*/
-
 	if(this->GLReturnedError("Mesh::Initialize - after shader Init"))
 	{
 		return false;
 	}
 
 	this->shaders.push_back(&this->phong_shader);
-	//this->shaders.push_back(&this->texture_shader);
 	this->shaders.push_back(&this->toon_shader);
-	//this->shaders.push_back(&this->solid_color_shader);
 
 	return true;
 }
@@ -219,6 +218,7 @@ void Mesh::BuildShape()
 {
 }
 
+//Take down all of the bits and bobs we use when we make the mesh!
 void Mesh::TakeDown()
 {
 	this->vertex_list.clear();	// TODO: Check for memory leaks!!
@@ -228,6 +228,7 @@ void Mesh::TakeDown()
 	super::TakeDown();
 }
 
+//Draws the object and possibly its normals.
 void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::ivec2 & size, const float time)
 {
 	if(this->GLReturnedError("Mesh::Draw - on entry"))
@@ -266,6 +267,7 @@ void Mesh::Draw(const glm::mat4 & projection, glm::mat4 modelview, const glm::iv
 	}	
 }
 
+//Calculates the cross product of two lines generated from the center point and the vertices in the two given directions.
 vec3 Mesh::CrossProduct(int index, int point_direction1, int point_direction2)
 {
 	vec3 norm1 = this->vertex_list[index + point_direction1].position - this->vertex_list[index].position;
@@ -275,6 +277,9 @@ vec3 Mesh::CrossProduct(int index, int point_direction1, int point_direction2)
 	return normal;
 }
 
+//Calculates the normals based on the neighboring vertices.
+//Checks for all the possible neighbor vertices.
+//Averages out the edge normals when they should be the same - for spheres/cylinders.
 void Mesh::CalcNormals(int slices, int stacks)
 {
 	int up_left = slices - 1;

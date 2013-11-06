@@ -13,6 +13,10 @@ Mars::Mars(void)
 {
 }
 
+
+//Initializes a Mars!
+//Reads in a mars data file, and pushes it to a vector of computed radii.
+//Calls BuildMesh/BuildShape and the normal functions, then initializes the standard mesh stuff.
 bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 color)
 {
 	vector<float> mars_radius;
@@ -38,7 +42,7 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 	BuildMesh(slices, stacks, color);
 	BuildShape(mars_radius, slices, stacks);
 	CalcNormals(slices, stacks);
-	BuildNormalVisualizationGeometry();
+	this->BuildNormalVisualizationGeometry();
 	this->has_specular = false;
 	if(!Mesh::Initialize())
 	{
@@ -47,6 +51,8 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 	return true;
 }
 
+//Takes in a vector of radii, and the size of the mesh.
+//Using the radius vector, builds a bumpy sphere (probably mars)
 void Mars::BuildShape(vector<float> mars_radius, int slices, int stacks)
 {
 		// Loop through EACH INDEX.
