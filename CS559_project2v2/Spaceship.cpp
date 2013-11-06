@@ -1,4 +1,9 @@
 #include "Spaceship.h"
+
+#include <iostream>
+
+using namespace std;
+
 Spaceship::Spaceship(void)
 {
 	
@@ -7,6 +12,7 @@ Spaceship::Spaceship(void)
 // Initialize() initializes a sphere and cylinder
 bool Spaceship::Initialize(int sliceDetail, int stackDetail, vec3 color)
 {
+	cout << "Initilizing primitives to build ship..." << endl;
 	if(!sphere.Initialize(1, sliceDetail, stackDetail, color))
 	{
 		return false;

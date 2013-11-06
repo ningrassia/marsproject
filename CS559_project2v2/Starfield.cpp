@@ -47,6 +47,8 @@ bool Starfield::Initialize(double inner_radius, double depth, int stars)
 	srand((unsigned int)(time(NULL)));
 	#endif
 
+	cout << "Randomizing position of " << stars << " stars..." << endl;
+
 	////generate points for the stars, and place them in the arrays!
 	for(int i = 0; i < stars; i++)
 	{

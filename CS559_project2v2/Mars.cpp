@@ -26,9 +26,15 @@ bool Mars::Initialize(char * filename, float radius, float max_offset, vec3 colo
 		cout << "file " << filename << " could not be opened." << endl;
 		return false;
 	}
+
+	cout << "Parsing " << filename << " to build mesh..." << endl;
+
 	// first two values are slices, then stacks.
 	myfile >> slices;
 	myfile >> stacks;
+
+	cout << "The mesh contains " << slices * stacks << " vertices and " << (2 * slices * stacks) - (2 * slices) << " triangles. Building..." << endl;
+
 	for(int i = 0; i < (slices * stacks); i++)
 	{
 		myfile >>temp_offset;

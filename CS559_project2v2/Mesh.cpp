@@ -276,7 +276,9 @@ vec3 Mesh::CrossProduct(int index, int point_direction1, int point_direction2)
 }
 
 void Mesh::CalcNormals(int slices, int stacks)
-{
+{	
+	cout << "Calculating normals..." << endl;
+
 	int up_left = slices - 1;
 	int up = slices;
 	int up_right = slices + 1;
