@@ -1,3 +1,10 @@
+/* By Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This class modifies the vertex positions and normals in a mesh to
+*  create a cylinder
+*/
+
 #pragma once
 
 #include <glm/glm.hpp>

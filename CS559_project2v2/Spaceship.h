@@ -1,3 +1,10 @@
+/* By Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This class sets up and draws a spaceship model using
+*  primitives we built in the sphere and cylinder classes
+*/
+
 #pragma once
 
 #include <glm/glm.hpp>

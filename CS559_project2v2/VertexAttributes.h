@@ -1,10 +1,5 @@
 // Taken from Perry Kivolowitz's "VertexAttributes.h" file in his Modern GL Example
 
-#pragma once
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 /*	Perry Kivolowitz - UW - Madison - CS 559 Demo
 	A  person more  expert in templates whould be able
 	to collect these classes into a single templatized
@@ -16,6 +11,11 @@
 	N = normal
 	T = texture coordinates
 */
+
+#pragma once
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class VertexAttributesPCNT
 {

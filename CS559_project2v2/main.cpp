@@ -1,4 +1,13 @@
-/* Comment header */
+/* PROJECT 2 by Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This program contains five modes: 
+*  - A rotating spaceship, lit and built from a mesh
+*  - A rotating model of mars, lit and build from a displacement mapped mesh
+*  - A first person view flying over the surface of mars
+*  - A third person view of a controllable ship flying over the surface of mars
+*  - A view from outside the starfield
+*/
 
 
 //Enum increment taken from http://www.cplusplus.com/forum/beginner/41790/

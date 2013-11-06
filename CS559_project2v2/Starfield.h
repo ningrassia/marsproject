@@ -1,3 +1,10 @@
+/* By Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This class randomizes the vertex positions in a vertex list
+*  to create a random starfield and draws them as points using a solid shader
+*/
+
 #pragma once
 #include "Object.h"
 #include "Shader.h"

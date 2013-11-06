@@ -1,3 +1,10 @@
+/* By Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This class modifies the vertex positions and normals in a sphere
+*  mesh to create a mars model based on a text file of altitudes
+*/
+
 #pragma once
 #include "sphere.h"
 #include <string>

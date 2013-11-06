@@ -1,4 +1,12 @@
 //Based on "Top.h" in Perry Kivolowitz's Modern GL Example
+/* By Nik Ingrassia and Jackson Reed
+*  For CS559 - Fall 2013 with perry Kivolowitz
+*  
+*  This class creates a flat mesh of some dimension and creates a 
+*  vector of their connectedness in order to draw triangles. Also
+*  contains the functionality to draw and set up shaders of a mesh.
+*  This class is the base of Sphere, Cylinder, and Mars
+*/
 
 #pragma once
 
